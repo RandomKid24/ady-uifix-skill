@@ -1,0 +1,37 @@
+{
+  "name": "ady-uifix-skill",
+  "version": "1.0.0",
+  "description": "ui-fix: an AI coding skill that audits and fixes any page, form or UI component against your design.md — real screenshots, axe checks, a usability score and a before/after demo.",
+  "type": "module",
+  "bin": {
+    "ady-uifix-skill": "bin/install.mjs"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "skill",
+    "agent-skill",
+    "opencode",
+    "antigravity",
+    "codex",
+    "ui",
+    "ux",
+    "design-system",
+    "accessibility"
+  ],
+  "author": "Aditya Badgujar <aditya.badgujar@beforth.in>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RandomKid24/ady-uifix-skill.git"
+  }
+}
