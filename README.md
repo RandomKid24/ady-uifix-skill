@@ -79,14 +79,15 @@ Point it at a file, a folder, a local URL (`http://localhost:5173/jobs/new`), a 
 | **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
 | **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
 | **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, Marathi/Devanagari, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
-| **4. Measure** | Six scanners: accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
+| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then seven scanners: **layout & spacing**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
 | **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
-| **6. Report** | Blunt and short. Hierarchy, rename, dependency, effort, stress and consistency tables |
+| **6. Report** | Blunt and short. A **layout blueprint** that says where every component goes, how wide, with what spacing — and why. Hierarchy, rename, dependency, effort, stress and consistency tables |
 | **7. Fix** | Every 🔴 and 🟠 fixed (with your existing design system) or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve |
 | **8. Prove** | Re-scans, re-walks, re-scores. **Visual regression** on every screen using a changed shared component. Checks the save payload and tests still pass. Builds a before / fixed / upgraded demo with a proof panel. Adds a regression test or lint rule. Updates design.md and memory |
 
 ### What it catches
 
+- **Layout & spacing** — forms stretched 1800px wide, Yes/No buttons floating in empty columns, a full-width dropdown next to a tiny button pair, number fields as wide as a paragraph, zig-zag 2-column grids of unrelated fields, near-miss alignment, random gaps (13px here, 22px there), ragged rows, children placed in the wrong column
 - **Hierarchy & naming** — section titles that look like field labels, "Packaging" under "Packaging", Tray Type vs Tray MOC, codes like MOC/FAT/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No with no visible selection
 - **Dependent fields** — clicks every choice to map which fields depend on which; flags children far from their parent or greyed out with no reason; checks reset-on-change and hidden values not being saved
 - **Way-finding** — long forms without numbered sections, section index, progress, or icons; catch-all sections like "Other"
@@ -119,11 +120,12 @@ Root cause: 1 comes from components/form/Section.tsx — also affected: LeaveFor
 
 | Category | Points |
 |---|---|
-| Clarity, hierarchy, naming & way-finding | 25 |
-| Usability for this kind of UI | 20 |
-| States & feedback | 15 |
+| Clarity, hierarchy, naming & way-finding | 20 |
+| Layout, spacing & placement | 20 |
+| Usability for this kind of UI | 15 |
+| States & feedback | 10 |
 | Accessibility & keyboard | 15 |
-| Design-system & consistency | 15 |
+| Design-system & consistency | 10 |
 | Responsive & stress | 10 |
 
 🔴 −8 · 🟠 −4 · 🟡 −2 per issue in its category. Always shown before and after.
@@ -156,6 +158,7 @@ your-project/
 skills/ui-fix/
 ├── SKILL.md                              # the pipeline
 ├── references/
+│   ├── layout-and-spacing.md             # grid, alignment, balance, widths, spacing, placement, blueprint
 │   ├── understand-the-screen.md          # purpose, data flow, element inventory, Screen brief
 │   ├── walkthrough-and-stress.md         # personas, friction log, stress tests, consistency
 │   ├── hierarchy-and-naming.md           # headings vs labels, confusing names, placeholders
@@ -164,6 +167,7 @@ skills/ui-fix/
 │   ├── prove-and-remember.md             # impact ranking, proof, regression guard, memory, hand-off
 │   └── design-md-template.md             # starter design.md
 └── scripts/
+    ├── layout-scan.js                    # grid, balance, dead zones, widths, spacing rhythm, layout map (browser)
     ├── axe-run.js                        # accessibility + tap targets + overflow (browser)
     ├── hierarchy-scan.js                 # heading/label styles, spacing, naming problems (browser)
     ├── dependency-scan.js                # maps dependent fields by flipping choices (browser, dev only)

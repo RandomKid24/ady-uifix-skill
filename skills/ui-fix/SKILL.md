@@ -15,6 +15,7 @@ The user points at something: a page, a form, a table, a dashboard, a modal, one
 - **Understand before you judge.** Know what the screen is for, who uses it, and what it does to the data before calling anything wrong.
 - **Evidence over opinion.** Every finding has proof: a measured number, a scan result, a screenshot, a walkthrough step. Tag it with the principle it breaks.
 - **Effort is the enemy.** Remove work: derive, default, defer, delete.
+- **Layout is the fix, not decoration.** Grid, alignment, balance, spacing rhythm, field widths and placement decide whether a screen feels right. A run that only adds `*`, aria attributes or renames while the layout is broken is a failed run.
 - **"Keep my look" = keep the design system**, never keep the problems. Fix with existing tokens and components.
 - **Fix the root.** Shared component first; then everything it touches is fixed too — and re-checked.
 - **Prove it, lock it, remember it.** Re-measure after, guard against regressions, record decisions so the next run is smarter.
@@ -28,6 +29,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | File | When |
 |---|---|
 | `references/understand-the-screen.md` | Every run — Phase 1 |
+| `references/layout-and-spacing.md` | Every run — visual critique, grid, alignment, balance, widths, spacing, placement, **Layout blueprint** |
 | `references/hierarchy-and-naming.md` | Every run — Phase 4–5 |
 | `references/walkthrough-and-stress.md` | Every run — Phase 3 (+ stress & consistency) |
 | `references/prove-and-remember.md` | Every run — impact ranking, Phase 7–8, definition of done |
@@ -35,6 +37,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/dependencies-and-navigation.md` | Dependent fields, or 4+ sections / long scroll |
 | `references/design-md-template.md` | When design.md is missing |
 | `scripts/axe-run.js` | Browser — accessibility (axe-core) + tap targets + overflow |
+| `scripts/layout-scan.js` | Browser — container width, grid & near-miss alignment, row balance, dead zones, field width vs content, spacing scale & rhythm, ragged rows, row-by-row layout map |
 | `scripts/hierarchy-scan.js` | Browser — heading vs label styles, spacing, confusing names, placeholders, fake values |
 | `scripts/dependency-scan.js` | Browser, dev only — flips choices to map dependent fields |
 | `scripts/focus-scan.js` | Browser — tab order vs visual order, focus visibility, keyboard-unreachable clickables |
@@ -95,6 +98,8 @@ From `references/walkthrough-and-stress.md`:
 ## Phase 4 — Measure
 
 Run what applies and keep the raw numbers for before → after:
+- **Visual critique first** (`layout-and-spacing.md` §1): study the screenshots and write 5–8 lines on grid, alignment lines, balance, rhythm, focal point, reading path, density, fit.
+- `layout-scan.js` — **always**. Container width, columns, near-miss edges, unbalanced rows (one block full, other mostly empty), dead-zone choice groups, fields wider than their content, off-scale and inconsistent gaps, ragged rows, plus the row-by-row **Layout map**. Run at desktop and 375px.
 - `axe-run.js` — accessibility violations with real values (e.g. contrast 2.8:1 vs 4.5:1), small tap targets, horizontal overflow.
 - `hierarchy-scan.js` — section vs label size/weight ratio (flag < 1.25× without extra weight/colour/container), gap above sections vs between fields (needs ≥ 2×), label = section name, duplicate/similar/vague/abbreviated/truncated labels, generic placeholders, fake values ("NA"), choice groups with no visible selection.
 - `dependency-scan.js` (forms, dev only) + code search for conditions on other fields (`disabled={!x}`, `watch()`, `v-if`, `required_if`, reset effects) → **Dependency map**.
@@ -105,6 +110,8 @@ Run what applies and keep the raw numbers for before → after:
 ## Phase 5 — Judge
 
 Review screenshots + code + walkthrough log + measurements. Only real problems. Categories:
+
+**L. Layout, spacing & placement** (`layout-and-spacing.md`) — one grid; 1–2 left edges per column, no near-misses; forms ~640–960px wide, one column by default, 2 columns only for short related pairs; no zig-zag reading path; field width matches content (Yes/No fit content, numbers ~120–200px with unit, selects to longest option); balanced rows (no full block next to a 25%-full block); spacing on the scale with label→input < field→field < group → group < section→section, identical everywhere; placement by task order → dependency → importance → grouping; primary action in the app's consistent place. Misplaced, unbalanced, misaligned or randomly spaced → 🟠 (🔴 if people misread or miss things).
 
 **H. Hierarchy & naming** (`hierarchy-and-naming.md`) — squint test (section titles that look like labels → 🔴), heading scan, label-only test, renames for same/similar/vague/abbreviated/master-table names, placeholders that say what to pick, no fake values, choices that look like choices.
 
@@ -142,11 +149,12 @@ Each category starts at max; subtract per issue (🔴 −8, 🟠 −4, 🟡 −2
 
 | Category | Max |
 |---|---|
-| Clarity, hierarchy, naming & way-finding (H + I + B) | 25 |
-| Usability for this kind of UI (C) | 20 |
-| States & feedback (D) | 15 |
+| Clarity, hierarchy, naming & way-finding (H + I + B) | 20 |
+| Layout, spacing & placement (L) | 20 |
+| Usability for this kind of UI (C) | 15 |
+| States & feedback (D) | 10 |
 | Accessibility & keyboard (E) | 15 |
-| Design-system & consistency (A + G) | 15 |
+| Design-system & consistency (A + G) | 10 |
 | Responsive & stress (F) | 10 |
 
 Always show the score with the per-category breakdown, before and after, in every run.
@@ -170,15 +178,19 @@ Root cause: 1 comes from components/form/Section.tsx — also affected: LeaveFor
 Verdict: <one honest line>
 ```
 
+Then the **Layout map** (before) and, whenever any layout issue exists, the **Layout blueprint + Why table** (format in `layout-and-spacing.md` §8): every affected section's new structure — order, grouping, grid columns per field, widths, spacing values — and one line of reasoning per decision. "Where should this be, how, and why" must be answered for every element you move.
+
 Then the tables that apply: Hierarchy · Rename · Dependency map · Effort · Stress · Consistency · Walkthrough friction log (top items).
 
 `quick` stops here. `handoff` outputs the hand-off prompt and stops.
 
 ## Phase 7 — Fix
 
-**Required fixes — always:** every 🔴 and 🟠, using existing tokens/components even if the user said "keep my look". Only a real blocker (backend/API change, product decision, missing data) excuses one — name it per issue.
+**Required fixes — always:** every 🔴 and 🟠, using existing tokens/components even if the user said "keep my look". **This includes layout**: implement the Layout blueprint — regrouping, reordering, re-gridding, resizing fields, fixing spacing, moving children under parents. These are fixes, not upgrades. Only a real blocker (backend/API change, product decision, missing data) excuses one — name it per issue.
 
-**Recommended upgrades — show, then ask:** regrouping, control swaps, sections → steps, derive/default, presets, copy-from-previous, feature checklists, section index. Build them as an **Upgraded** view in the demo with their score/effort gain. Apply only on a yes (unless the user asked for a redesign). Check memory's Rejected list first.
+**Minimal-change trap:** before finishing, look at your change list. If it's mostly markers (`*`, aria, ids), copy tweaks and colours while layout-scan or the visual critique found 🟠/🔴 layout problems, you are not done — go back and implement the blueprint.
+
+**Recommended upgrades — show, then ask:** workflow changes beyond layout — sections → multi-step wizard, derive/default, presets, copy-from-previous, feature checklists, section index. Build them as an **Upgraded** view in the demo with their score/effort gain. Apply only on a yes (unless the user asked for a redesign). Check memory's Rejected list first.
 
 🟡 polish: fix if cheap, otherwise list.
 
@@ -197,6 +209,7 @@ From `references/prove-and-remember.md`:
 2. **Demo** — one self-contained HTML file in the run folder (published as an artifact or inline preview if the environment allows):
    - **Before / Fixed / Upgraded** views (stacked on mobile), each with score badge and per-category bars.
    - Real screenshots embedded (data URIs) with desktop/mobile toggle.
+   - The **Fixed view implements the Layout blueprint** — the user must see the new structure, not the old layout with markers.
    - A **live, interactive Fixed view** built with the real design.md tokens as CSS variables: hover/focus, primary button loading → success, empty submit → inline errors + error summary, dependent fields revealing under their parent, section index highlighting and jumping, searchable selects filtering.
    - Numbered callouts matching issue numbers.
    - A **Proof panel**: scores, axe / focus / hierarchy / token numbers, walkthrough steps & friction, Effort table — before → after.
@@ -221,6 +234,8 @@ Check the **Definition of done** in `prove-and-remember.md`, then end with:
 
 - Don't judge before the Screen brief, or before reading memory and design.md.
 - Don't report opinions without evidence, or issues without Impact and file:line.
+- Don't finish with a change list of markers and renames while the layout is broken — implement the blueprint.
+- Don't move or resize anything without saying where, how and why.
 - Don't call a screen fine if section titles look like labels, names can be confused, dependent fields aren't visibly linked, or keyboard users get stuck.
 - Don't treat "keep my look" as "change nothing visible".
 - Don't leave a 🔴/🟠 unfixed without naming the blocker.
