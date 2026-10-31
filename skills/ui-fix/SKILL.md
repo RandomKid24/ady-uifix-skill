@@ -1,279 +1,232 @@
 ---
 name: ui-fix
-description: Audit and fix any page, form or UI component against the project's design.md, with real screenshots, automated checks, a usability score and a before/after demo. Use when the user says a screen, form, table, modal or component looks wrong, is confusing, or needs fixing, or runs /ui-fix.
+description: Audit and fix any page, form, table or UI component like a senior UI engineer — understands what the screen is for, walks it as real users, measures it (accessibility, hierarchy, naming, dependencies, keyboard, stress), fixes it against the project's design.md, proves the fix with before/after scores and visual regression, and remembers decisions per project. Use when a screen looks wrong, is confusing, hard to use or needs fixing, or on /ui-fix.
 ---
 
 # UI Fix
 
-The user points at something that looks or works wrong. It can be anything: a full page, a form, a table, a dashboard, a modal, a single button, a mobile screen. Your job:
-1. Check it against the project's design system (design.md).
-2. See it for real (screenshots) and measure it (automated checks + score).
-3. Tell them bluntly what's wrong.
-4. Fix it at the right level (component vs page) in their stack.
-5. Show a before/after demo with scores so they can SEE and compare the result.
-6. Keep design.md growing so the next fix stays consistent.
+The user points at something: a page, a form, a table, a dashboard, a modal, one component, a mobile screen. You make it **obviously usable** — then prove it.
 
-The bar for every fix: **a first-time user with zero context knows what this screen is, what to click, and what happens next — without thinking.** If someone could hesitate, misclick, or get stuck, it's not fixed.
+**The bar:** a first-time user with zero context knows what this screen is, what to click, and what happens next, without thinking. A daily user finishes the job in the fewest steps. Nobody loses work. If anyone could hesitate, misclick, get stuck, or repeat work, it isn't fixed.
 
-## Mindset — think like the best UI engineer on the team
+## Mindset
 
-- **Not broken ≠ good.** A screen that works but makes people think, scroll, guess or click twice is a screen to fix. Judge by how fast and confidently a new user gets the job done, not by whether anything throws an error.
-- **Effort is the enemy.** Every field, click, decision and tab costs the user. Your best fixes remove work: derive it, default it, defer it, or delete it.
-- **"Keep my look" means keep the design system** — colors, fonts, spacing, components, layout style. It never means keep usability problems. Fix 🔴 and 🟠 issues using the existing tokens and components.
-- **Be opinionated, then let the user choose.** Fix what's required; propose the bigger upgrades clearly, show them in the demo, and let the user say yes or no.
-- **Never present a weak run as a clean bill of health.** If the screen still has problems after your fix, say so plainly, with the score.
+- **Not broken ≠ good.** Judge by how fast and confidently real users get the job done, not by whether anything errors.
+- **Understand before you judge.** Know what the screen is for, who uses it, and what it does to the data before calling anything wrong.
+- **Evidence over opinion.** Every finding has proof: a measured number, a scan result, a screenshot, a walkthrough step. Tag it with the principle it breaks.
+- **Effort is the enemy.** Remove work: derive, default, defer, delete.
+- **"Keep my look" = keep the design system**, never keep the problems. Fix with existing tokens and components.
+- **Fix the root.** Shared component first; then everything it touches is fixed too — and re-checked.
+- **Prove it, lock it, remember it.** Re-measure after, guard against regressions, record decisions so the next run is smarter.
+- **Opinionated, then the user chooses.** Required fixes get done; bigger upgrades get shown and approved.
+- **Never call a weak result good.** Report the honest after-score.
 
-Bundled files (paths relative to this SKILL.md):
-- `references/understand-the-screen.md` — **read this on every run**: purpose, users, data in/out, flow, element inventory, primary task path, Screen brief
-- `references/hierarchy-and-naming.md` — **read this on every run**: section titles vs labels, squint test, label-only test, duplicate/similar/vague names, abbreviations, placeholders, fake values, choice states
-- `scripts/hierarchy-scan.js` — run in the browser: measures heading vs label styles and spacing, finds duplicate/similar/truncated labels, generic placeholders, "NA" values, choice groups with no visible selection
-- `references/dependencies-and-navigation.md` — **read for any form with dependent fields or 4+ sections**: parent→child links, hide vs disable, numbered sections, section index, icons
-- `scripts/dependency-scan.js` — run in the browser (local/dev only): flips each Yes/No, radio, checkbox and small select, maps which fields get hidden/disabled/required/changed, checks the child sits next to its parent, finds greyed-out fields with no reason, restores original values
-- `references/forms-and-data-entry.md` — **read this for any form, wizard, settings page, or data-entry screen** (input choice, dropdowns, effort table, flow, validation)
-- `scripts/token-scan.mjs` — finds hardcoded colors/sizes/inline styles (design-token drift)
-- `scripts/axe-run.js` — paste into the browser to run axe-core accessibility checks
-- `references/design-md-template.md` — template for generating a missing design.md
+## Bundled files (paths relative to this SKILL.md)
+
+Read the reference before the phase that uses it. Load only what the target needs.
+
+| File | When |
+|---|---|
+| `references/understand-the-screen.md` | Every run — Phase 1 |
+| `references/hierarchy-and-naming.md` | Every run — Phase 4–5 |
+| `references/walkthrough-and-stress.md` | Every run — Phase 3 (+ stress & consistency) |
+| `references/prove-and-remember.md` | Every run — impact ranking, Phase 7–8, definition of done |
+| `references/forms-and-data-entry.md` | Forms, wizards, settings, data entry |
+| `references/dependencies-and-navigation.md` | Dependent fields, or 4+ sections / long scroll |
+| `references/design-md-template.md` | When design.md is missing |
+| `scripts/axe-run.js` | Browser — accessibility (axe-core) + tap targets + overflow |
+| `scripts/hierarchy-scan.js` | Browser — heading vs label styles, spacing, confusing names, placeholders, fake values |
+| `scripts/dependency-scan.js` | Browser, dev only — flips choices to map dependent fields |
+| `scripts/focus-scan.js` | Browser — tab order vs visual order, focus visibility, keyboard-unreachable clickables |
+| `scripts/stress-text.js` | Browser — pseudo-localization, Devanagari, long values; reversible |
+| `scripts/token-scan.mjs` | Shell (Node) — hardcoded colors/sizes/inline styles |
+
+Browser scripts: run the file's contents with the browser's JS tool (or Playwright `page.evaluate`). Each has a `ROOT`/`TARGET`/`MODE` constant at the top to set first.
 
 ## Modes
 
-Pick from the user's wording; default to `fix`.
-- `quick` — audit + score + report only. No code changes.
-- `fix` — full flow below (default).
-- `sweep` — audit every page/form/component in a folder or route group. Produce one ranked table (target, score, 🔴/🟠/🟡 counts, top issue), then fix the worst ones or the shared root causes first. Ask before editing more than ~5 files.
+Pick from the user's wording; default `fix`.
+- `quick` — Phases 0–5 (understand, see, walk, measure, judge) + report. No code changes.
+- `fix` — everything.
+- `sweep` — run Phases 0–5 on every screen in a folder/route group → one ranked table (screen, score, Impact-weighted issue count, top issue, shared root causes). Then fix shared root causes first, then the worst screens. Ask before editing more than ~5 files.
+- `handoff` — like `quick`, then output a paste-ready implementation prompt for another coding agent (format in `prove-and-remember.md`).
+
+## Safety
+
+- Run the app and scripts on **local / dev / staging only**. Never production. Never submit real data. `dependency-scan.js` and walkthroughs click choices — never Save/Submit/Delete unless the data is disposable and you say so.
+- Don't change business logic, API payloads, permissions or unrelated files.
+- Never rewrite or delete existing design.md rules or memory decisions on your own.
 
 ---
 
-## Step 1 — Find design.md (always first)
+## Phase 0 — Remember & ground
 
-design.md holds the system's current design decisions. Every fix must follow it.
+1. Read **`.ui-fix/memory.md`** if it exists (format in `prove-and-remember.md`). Follow its Decisions, don't re-propose its Rejected items, use its Glossary names. Create it at the end of the first run.
+2. Find **design.md** — case-insensitive: repo root, `docs/`, `.design/`, `design/`, `src/`, `frontend/`, `client/`, then `*design-system*.md`, `*style-guide*.md`. Read it fully: tokens, type scale, spacing, components, states, copy rules, icons, users, deprecated.
+   - **Missing →** say so up front:
+     > ⚠️ No design.md found. I'll infer the system from the code for now (Tailwind config / CSS variables / theme / most-used components). I can generate a design.md so every future fix stays consistent — want that?
+     List what you inferred. Generate from `references/design-md-template.md` if the user agrees (or in `sweep`), marking guesses `(inferred)`.
+   - design.md vs code conflict → design.md wins; flag it.
+3. Note the project's stack, component library, icon set, and test/lint setup — fixes and guards must use them.
+4. Run artifacts go in `.ui-fix/runs/<YYYY-MM-DD>-<target-slug>/`.
 
-Search case-insensitively: `design.md` at repo root, then `docs/`, `.design/`, `design/`, `src/`, `frontend/`, `client/`, then any `*design-system*.md` or `*style-guide*.md`.
+## Phase 1 — Understand the screen
 
-Read the whole file. Note: tokens (colors, fonts, type scale, radius, spacing, shadows), component rules, layout rules, states, copy/voice rules, target users, anything deprecated.
+Do everything in `references/understand-the-screen.md`. Read the source, children, shared styles, form schema, **the API it calls, the backend handler and the model it writes**. Produce the **Screen brief**: purpose ("<who> uses this to <do what> so that <outcome>"), job type, users (role, frequency, device, domain knowledge, language), data in/out, business rules, side effects, flow (from → here → next), element inventory, primary task path (steps + clicks), UI↔backend mismatches, assumptions.
 
-**If not found — say so up front:**
-> ⚠️ No design.md found in this project. I'll infer the system from the code for now. I can also generate a design.md so every future fix stays consistent — want that?
+If a guess would change the fix, ask one short question; otherwise state the assumption and continue. Every later finding must tie back to the brief.
 
-Fall back to `tailwind.config.*`, `:root` CSS variables, theme files (MUI/Chakra/shadcn/Flutter ThemeData), and the 2–3 most-used existing components. List what you inferred so the user can correct it.
+## Phase 2 — See it for real
 
-If the user says yes (or in `sweep` mode), **generate design.md** from `references/design-md-template.md` (see Step 9).
+If any browser is available (built-in browser, Claude in Chrome, Playwright via the shell):
+1. Use the running dev server or start it with the project's own command. Don't install new frameworks for this.
+2. Open the target. Log in with test credentials from seed/fixture/env-example files, or ask.
+3. Screenshot desktop (~1440) and mobile (375), plus states you can trigger (empty submit, focus, hover, empty/error/loading if reachable). Save to the run folder as `before-*.png`.
 
-If design.md contradicts the code, design.md wins — flag the contradiction.
+No browser or not runnable (native app) → say so in one line; work from code + any screenshot given, and do the walkthroughs and stress tests mentally.
 
-## Step 2 — Understand the screen (before judging anything)
+## Phase 3 — Walk it as real users
 
-Read `references/understand-the-screen.md` and do all of it. You can't fix a screen you don't understand.
+From `references/walkthrough-and-stress.md`:
+- **Persona walkthroughs** on the primary task path — always **Newcomer** and **Keyboard-only** (run `focus-scan.js` first), plus whichever of Power user / Touch / Low vision (200% zoom) / Regional language / Interrupted match the brief. Include the 5-second test and first-click test. Log every friction point (hesitation, wrong click, dead end, backtrack, repeat work, surprise, lost work, can't tell state) and per persona: steps, clicks, friction count, completed?
+- **Stress tests**: breakpoints 320→1440, 200% zoom, `stress-text.js` (`expand`, `devanagari` if users read Indic scripts or the UI is translated, `long-values`; then `restore`), data volume 0/1/many (local data only), missing data, slow network, errors, dark mode if supported.
+- **Consistency**: compare with 2–3 sibling screens doing the same job.
 
-- Find and read the actual source, plus child components, shared styles, form schema/validation, **the API/endpoint it calls, the backend handler and the model/table it writes**.
-- Classify the target: page / form / table-or-list / dashboard / modal / navigation / single component / mobile screen. Step 4 checks depend on this.
-- Work out:
-  - **Purpose** — one sentence: "<who> uses this to <do what> so that <outcome>", and the job type (Create / Edit / Review / Look up / Monitor / Configure / Bulk / Read / Convert). The job type decides what "good" means.
-  - **Users** — roles, how often they use it, device/setting, domain knowledge, language.
-  - **What it does** — data in, data out, business rules, side effects, field dependencies.
-  - **Flow** — where users come from, where they go after, related screens.
-  - **Element inventory** — every element with its purpose, data, required, frequency. Flag elements with no clear purpose, unclear labels, wrong prominence, duplicates.
-  - **Primary task path** — the shortest real path to finish the main job, with step and click count.
-  - **UI ↔ backend mismatches** — required on server but not marked, collected but ignored, backend-only validation, hardcoded options that should be master data. Report these as issues.
-- Output the **Screen brief** (format in the reference) before the audit. If something in it is a guess that would change the fix, ask one short question; otherwise state the assumption and keep going.
-- If it's ambiguous which file, ask one short question. Otherwise start.
+## Phase 4 — Measure
 
-Every finding later must tie back to the brief: why it hurts **this** user doing **this** job.
+Run what applies and keep the raw numbers for before → after:
+- `axe-run.js` — accessibility violations with real values (e.g. contrast 2.8:1 vs 4.5:1), small tap targets, horizontal overflow.
+- `hierarchy-scan.js` — section vs label size/weight ratio (flag < 1.25× without extra weight/colour/container), gap above sections vs between fields (needs ≥ 2×), label = section name, duplicate/similar/vague/abbreviated/truncated labels, generic placeholders, fake values ("NA"), choice groups with no visible selection.
+- `dependency-scan.js` (forms, dev only) + code search for conditions on other fields (`disabled={!x}`, `watch()`, `v-if`, `required_if`, reset effects) → **Dependency map**.
+- `focus-scan.js` — tab vs visual order, backward jumps, positive tabindex, no visible focus, clickable-but-unreachable.
+- `token-scan.mjs` — `node <skill-dir>/scripts/token-scan.mjs <files/folders> [--json]` → hardcoded values mapped to design.md tokens. No Node → grep the same patterns.
+- Forms: **Effort table** (fields, required, dropdowns, decisions, clicks to complete, typing, tabs) — see `forms-and-data-entry.md`.
 
-## Step 3 — See it for real
+## Phase 5 — Judge
 
-If any browser is available (built-in browser, Claude in Chrome, Playwright/Puppeteer via the shell), use it:
+Review screenshots + code + walkthrough log + measurements. Only real problems. Categories:
 
-1. Get the app running. Use the existing dev server if one is up; otherwise start it with the project's own command (`npm run dev`, `python manage.py runserver`, `flutter run -d web-server`, etc.). Don't install new frameworks to do this.
-2. Navigate to the target. If it needs login, use test credentials from the project's seed/fixture/env-example files, or ask the user. Only run against local/dev/staging — never production.
-3. Screenshot at **desktop (~1440px)** and **mobile (375px)**. Also capture key states you can trigger: empty submit on forms, hover/focus on the primary button, empty and error states if reachable.
-4. Save as `ui-fix/before-desktop.png`, `ui-fix/before-mobile.png`, etc.
+**H. Hierarchy & naming** (`hierarchy-and-naming.md`) — squint test (section titles that look like labels → 🔴), heading scan, label-only test, renames for same/similar/vague/abbreviated/master-table names, placeholders that say what to pick, no fake values, choices that look like choices.
 
-If no browser is available or the target can't run (e.g. native app), say so in one line and work from the code and any screenshot the user gave.
+**I. Dependencies & way-finding** (`dependencies-and-navigation.md`) — child right under its parent and visibly attached (other column 🟠, other section/tab 🔴); hide when meaningless, or disabled *with a reason*; parent change resets/re-filters child; required follows visibility; many Yes/No toggles → feature checklist that expands; 4+ sections → numbered specific titles (no "Other"/"Misc"), sticky section index with progress, tabs with missing-field counts, section icons from the project's icon set (icon + text).
 
-## Step 4 — Audit
+**B. Zero-context clarity** — what is this screen; one obvious primary action, secondary quieter, destructive separated and confirmed; labels say what happens ("Add employee", not "Submit"); clickable looks clickable; no jargon; a way out; visible feedback for every action.
 
-### 4a. Automated checks (facts, not vibes)
+**C. By target type** — run what applies:
+- **Forms & data entry** — all of `forms-and-data-entry.md`: derive/default/defer/delete; right control per field (2–4 options → radio/segmented, 10+ → searchable, units as suffix…); dropdown order, labels, dependent dropdowns, inline create; required-first sections; keyboard flow; on-blur validation; error summary that jumps; no lost work; review step for high-stakes saves.
+- **Tables / lists** — search, filters, sorting, sticky header, pagination/virtualisation, visible row actions, bulk actions, right-aligned numbers, mobile layout, useful empty state.
+- **Dashboards** — key number first, units and period on every metric, titled charts with legends, no decoration without data.
+- **Modals** — clear title, one primary action, Esc + close, focus trapped and returned, not a page in disguise.
+- **Navigation** — current location obvious, labels match page titles, works on mobile.
+- **Single components** — every state (default, hover, focus, active, disabled, loading, error), all sizes it's used at, matches the system component it duplicates.
+- **Staff / data-entry screens** — keyboard-only flow, shortcuts, no mouse-only steps, big targets for touch/shop floor, labels in the users' language where needed.
+- **Public / consumer** — value obvious in seconds, one CTA, trust signals near it, fast on mobile.
 
-**Accessibility — axe-core.** In the browser, run the contents of `scripts/axe-run.js` (set `TARGET` to the target's CSS selector, or leave `null` for the whole page). It returns violations with impact, rule, node count, and a sample selector. Or use the CLI if available: `npx @axe-core/cli <url>`. Record actual numbers (e.g. "contrast 2.8:1, needs 4.5:1").
+**D. States** — loading, empty (with next step), error (with retry), disabled (with reason), success (what happened + what's next).
 
-**Hierarchy & naming.** In the browser, run the contents of `scripts/hierarchy-scan.js` (set `ROOT` to the target's selector). It returns: section-title vs field-label size/weight ratios (flags anything under 1.25× without extra weight/color), gap above sections vs gap between fields, labels equal to their section name, duplicate and similar labels, abbreviations, vague labels, truncated labels, generic placeholders ("Select"), fake values ("NA", "-"), and choice groups with no visible selected state. Without a browser, check the same things from the code and screenshots.
+**E. Accessibility** — axe + focus-scan + what you see: contrast, focus, keyboard, names on icon buttons, colour never the only signal.
 
-**Dependencies.** On forms, also run `scripts/dependency-scan.js` (local/dev/staging only — it clicks choices, never Save/Submit, and restores them). Combine with a code search for conditions on other fields (`disabled={!x}`, `watch()`, `v-if`, `required_if`, effects that reset fields). Output the **Dependency map**: Parent · Value · Child · Effect · Visible link? · Layout.
+**F. Responsive & stress** — breakpoints, 200% zoom, long text, scripts, data volume.
 
-**Design-token drift:**
-```bash
-node <skill-dir>/scripts/token-scan.mjs <target files or folders> [--json]
-```
-It reports hardcoded hex/rgb/hsl colors, raw px values, Tailwind arbitrary values (`p-[13px]`, `text-[#333]`), and inline visual styles, with file:line. Map each finding to the design.md token it should be. If Node isn't available, grep for the same patterns.
+**G. Consistency** — same job, same pattern, same names as sibling screens and the Glossary.
 
-**Measure in the browser where possible:** tap targets under 44×44px, horizontal overflow at 375px (`document.documentElement.scrollWidth > innerWidth`), elements with no accessible name.
+**A. Design-system adherence** — tokens, type scale, spacing, components, deprecated patterns.
 
-### 4b. Manual review
+For every issue: severity (🔴 blocks / loses data · 🟠 confuses / slows · 🟡 off-system / polish), **Impact = Severity × Frequency × Reach** (1–27, see `prove-and-remember.md`), a principle tag (e.g. [Proximity], [Match], [Hick], [Fitts], [Prevention], [A11y]), evidence, and file:line.
 
-Use the screenshots plus the code. Only report real problems.
+**Root cause:** if it comes from a shared component or theme, mark it; find every other screen using that component or repeating the pattern → "also affected".
 
-**A. Design-system drift** — wrong tokens, fonts, spacing, one-off components where a system component exists, deprecated patterns.
+### Score (0–100)
 
-**H. Hierarchy & naming (check first — read `references/hierarchy-and-naming.md`)**
-- **Squint test** on the screenshot: can you count the sections and see where each starts and ends? Section titles that look like field labels → 🔴.
-- **Heading scan**: section titles alone read like a table of contents.
-- **Label-only test**: read just the labels as a stranger. Section and field with the same name ("Packaging" → "Packaging"), near-identical names (Tray Type / Tray MOC / Tray Master), codes and abbreviations (MOC, Qty., HMI), vague labels ("Data Required" — required for what?), master-table names used as labels, truncated labels → fix each with a Rename table.
-- Placeholders say what to pick ("Select tray type"); no fake values ("NA") in fields; list values typed as text → multi-select.
-- Choice groups (Yes/No etc.) show a clear selected state and don't look like action buttons.
-
-**I. Dependencies & way-finding (read `references/dependencies-and-navigation.md`)**
-- Every child field sits right under its parent and looks attached (indent, connector, shared box). Child in another column → 🟠; in another section/tab → 🔴.
-- Child that's meaningless when the parent is off → hide it and reveal on change. If kept disabled, it must say why ("Turn on Door Access System to choose a type"). Silent grey boxes → 🟠.
-- Parent change clears/re-filters the child and says so; hidden values never get submitted; required follows visibility.
-- Many Yes/No feature toggles in one section → a checklist of features, each expanding its own details.
-- 4+ sections or long scroll → numbered, specific section titles (no "Other"/"Misc"), sticky section index with current section and completion, tabs showing missing-field counts, section icons from the project's icon set (icon + text, never icon-only).
-
-**B. The zero-context user test (most important)**
-- What is this screen? Clear title? Would someone know where they are?
-- Exactly ONE obvious primary action, visually dominant. Secondary actions quieter. Destructive actions separated, styled as dangerous, with confirmation.
-- Labels say what happens ("Save invoice", "Add employee") — not "Submit", "OK", "Click here", or unlabeled icons.
-- Clickable things look clickable; non-clickable things don't.
-- Clear visual hierarchy; no wall of equal-weight stuff.
-- No jargon, internal codes, or unexplained abbreviations for these users.
-- A way out: back, cancel, close, breadcrumbs. Leaving doesn't silently lose work.
-- Every action gives visible feedback.
-
-**C. Checks by target type** — run only what applies:
-- **Forms & data entry:** read `references/forms-and-data-entry.md` and apply all of it. At minimum: measure the Effort table; check every field can't be derived/defaulted/deferred; right control type per field (radio/segmented for 2–4 options, searchable select for 10+, units as suffix, etc.); dropdown option order, readable labels (no bare codes), placeholder contrast, dependent dropdowns; required-first grouping and sections; tabs show where errors/missing fields are; keyboard flow; on-blur validation, error summary that jumps to the field; no lost work.
-- **Tables / lists:** search; filters; sorting; sticky header on long tables; pagination or virtual scroll; row actions visible (not hover-only); bulk actions if users act on many rows; numbers right-aligned; usable mobile layout (cards or horizontal scroll with pinned first column); useful empty state.
-- **Dashboards:** most important number first; every metric labelled with unit and period; charts have titles and legends; no decoration without data.
-- **Modals / dialogs:** clear title; one primary action; Esc and a close button work; focus trapped and returned; not used for things that should be a page.
-- **Navigation:** current location highlighted; labels match page titles; reachable on mobile.
-- **Single components:** every state designed (default, hover, focus, active, disabled, loading, error); works at the sizes it's used at; matches the system component it duplicates.
-- **Heavy data-entry / staff screens:** keyboard-only flow works; shortcuts for frequent actions; no mouse-only steps; large targets for touch or shop-floor use; labels in the users' language where design.md or the client calls for it.
-- **Public / consumer screens:** value is obvious in seconds; one call to action; trust signals near it; fast on mobile.
-
-**D. States** — loading, empty (with a next-step action, not just "No data"), error (with retry), disabled (with reason), success. Flag every missing one.
-
-**E. Accessibility** — merge axe results with what you see: contrast, focus visibility, keyboard use, aria-labels on icon buttons, color never the only signal.
-
-**F. Responsive** — from the 375px screenshot: cramped, overflowing, overlapping, tiny targets, unusable modals.
-
-### Severity
-- 🔴 **Broken / blocks users** — someone will get stuck, misclick, or lose data
-- 🟠 **Confusing** — slows people down or makes them guess
-- 🟡 **Off-system / polish** — design.md drift, inconsistency
-
-### 4c. Root cause — component or page?
-
-For each issue, check where it actually lives:
-- If it comes from a **shared component** (Button, Input, Table, Modal, Layout, theme), mark it as root-cause. The fix goes in that component, not the page.
-- Then **sweep**: search the codebase for other screens using the same component or repeating the same bad pattern (same hardcoded color, same "Submit" label, same placeholder-as-label). List them as "also affected".
-
-## Step 5 — Score
-
-Score the target 0–100. Each category starts at its max; subtract per issue in that category (🔴 −8, 🟠 −4, 🟡 −2), floor at 0.
+Each category starts at max; subtract per issue (🔴 −8, 🟠 −4, 🟡 −2), floor 0.
 
 | Category | Max |
 |---|---|
 | Clarity, hierarchy, naming & way-finding (H + I + B) | 25 |
-| Type-specific usability (C) | 20 |
+| Usability for this kind of UI (C) | 20 |
 | States & feedback (D) | 15 |
-| Accessibility (E + axe) | 15 |
-| Design-system adherence (A + token scan) | 15 |
-| Responsive (F) | 10 |
+| Accessibility & keyboard (E) | 15 |
+| Design-system & consistency (A + G) | 15 |
+| Responsive & stress (F) | 10 |
 
-Show the per-category breakdown. After the fix, re-score honestly with the same rules — no points for things you didn't actually fix.
+Always show the score with the per-category breakdown, before and after, in every run.
 
-**Always show the score**, before and after, in every run — even when the changes are small. A small change with a low after-score is important information.
+## Phase 6 — Report
 
-For forms with dependent fields, always include the **Dependency map**.
-
-Always include the **Hierarchy table** (level · size · weight · spacing, from hierarchy-scan) and a **Rename table** (current label · new label · why) whenever any label changes.
-
-For forms and data-entry screens, also show the **Effort table** (fields, required, dropdowns, decisions, clicks to complete, typing, tabs) before → after. See the forms reference.
-
-## Step 6 — Report (blunt, short)
-
-Talk like a straight-talking senior designer. Direct, some attitude is fine, no fluff. Each issue = what's wrong + why it hurts the user + where (file:line) + evidence (axe rule, measured value, or screenshot).
-
-Start with the Screen brief (from Step 2), then the issues:
+Blunt, short, evidence-first. Talk like a senior designer who respects the user's time.
 
 ```
-## <target> — score 48/100
-Purpose: Sales coordinators create a manufacturing job for a confirmed order. Daily use, desktop.
+## <target> — 48/100
+<Screen brief, 3–6 lines>
 
-🔴 1. Primary action is invisible — "Save" is a grey ghost button next to a bright red "Delete". Users will hit the wrong one. (EmployeeForm.tsx:142)
-🔴 2. Placeholders used as labels — type one character and the field name is gone. axe: label ×6.
-🟠 3. "Submit" tells nobody anything. It creates an employee — say "Add employee".
-🟡 4. #1a73e8 hardcoded ×6 — design.md says --signal.
+Walkthrough: Newcomer 14 steps · 5 friction · completed ✓ | Keyboard ✗ stuck at Door access type
 
-**Root cause:** 1 and 2 come from components/ui/Input.tsx and Button.tsx — also affected: LeaveForm, ExpenseForm, VendorForm.
+🔴 [27] 1. Section titles look like labels — "Tray & Rack" 16px/500 vs labels 14px/500 (1.14×), 16px gap above vs 13px between fields. Newcomer couldn't tell where sections start. [Proximity] JobForm.tsx:212
+🔴 [18] 2. Tab jumps from Capacity to Save, skipping Model No. (focus-scan: backward jump 320px). [A11y] JobForm.tsx:88
+🟠 [18] 3. "Door access type" sits in the other column and greys out silently when Door Access is No. [Proximity][Visibility]
+🟡 [4]  4. #1a73e8 ×6 — design.md says --signal.
 
-**Verdict:** Usable if you built it. Anyone else is guessing.
+Root cause: 1 comes from components/form/Section.tsx — also affected: LeaveForm, VendorForm.
+Verdict: <one honest line>
 ```
 
-In `quick` mode, stop here.
+Then the tables that apply: Hierarchy · Rename · Dependency map · Effort · Stress · Consistency · Walkthrough friction log (top items).
 
-## Step 7 — The fix
+`quick` stops here. `handoff` outputs the hand-off prompt and stops.
 
-Split the work into two tiers and say which is which:
+## Phase 7 — Fix
 
-- **Required fixes — always do these.** Every 🔴 and 🟠 issue. Using the existing design system, even if the user said "keep my look". The only acceptable reason to leave one is a real blocker (needs a backend/API change, needs a product decision, needs data you don't have) — state the blocker per issue.
-- **Recommended upgrades — propose, show, ask.** Bigger improvements that change how the screen works: reordering or regrouping fields, swapping control types, splitting a long tab into sections or steps, deriving/defaulting fields, presets, "copy from previous". Show them in the demo (as a second "Upgraded" variant if needed) with the effort/score gain, and apply them only when the user says yes — unless they already asked for a full redesign.
-- 🟡 polish items may be left out, but list them.
+**Required fixes — always:** every 🔴 and 🟠, using existing tokens/components even if the user said "keep my look". Only a real blocker (backend/API change, product decision, missing data) excuses one — name it per issue.
 
-Then:
-- Fix **root causes first**, in the shared component, then page-specific issues. Order: 🔴 → 🟠 → 🟡.
-- When changing a shared component, check every place it's used still looks right; keep its props API backward compatible, or update all call sites.
-- For "also affected" screens: if the component fix covers them, say so. If they need their own edits, list them and ask before editing more than ~5 files.
-- Write in the project's actual stack and conventions. Use design.md tokens and system components only. If design.md has no answer, don't invent silently — see Step 9.
-- Don't redesign what isn't broken. Keep business logic, API calls and data flow intact.
-- With file access, apply edits directly (or as a diff if the user wants to review). Otherwise give complete, paste-ready code for every file touched.
-- Add a change list: each change → which numbered issue it fixes.
+**Recommended upgrades — show, then ask:** regrouping, control swaps, sections → steps, derive/default, presets, copy-from-previous, feature checklists, section index. Build them as an **Upgraded** view in the demo with their score/effort gain. Apply only on a yes (unless the user asked for a redesign). Check memory's Rejected list first.
 
-## Step 8 — Verify + demo (required)
+🟡 polish: fix if cheap, otherwise list.
 
-**Verify for real when you can:** after applying the fix, reload in the browser, take the same screenshots (`ui-fix/after-desktop.png`, `ui-fix/after-mobile.png`), re-run axe and the token scan, and re-score. If something still fails, fix it and check again before showing the user.
+How:
+- Root causes first (shared component/theme), then page-specific, in Impact order.
+- Shared component changes: keep the props API backward compatible or update every call site.
+- Project's stack, conventions, component library, icon set, design.md tokens only. If design.md has no answer, propose a rule (Phase 8) instead of inventing silently.
+- Keep business logic, payloads and data flow intact.
+- With file access, edit directly (or as a diff if asked). Otherwise complete, paste-ready code for every file touched.
+- Change list: each change → issue number.
 
-**Build a single self-contained HTML demo** (`ui-fix/demo-<target>.html`):
-- **Before / After side by side** (stacked on mobile), each with its **score badge** and per-category bars. If you proposed recommended upgrades, add a third **Upgraded** view so the user can compare Before / Fixed / Upgraded.
-- For forms: the Effort table under each view, and a live After that really behaves — searchable selects filter, dependent fields reveal under their parent when switched on, defaults pre-filled, error summary jumps to fields, section index highlights and jumps.
-- If real screenshots exist, show them (embedded as data URIs) with a desktop/mobile toggle.
-- A **live, interactive After** rebuilt in HTML with the real design.md tokens as CSS variables: hover/focus states, primary button shows loading → success, empty submit shows inline validation, toggles for empty/error/loading states.
-- Numbered callout badges on the After side matching the issue numbers in the report.
-- An "Automated checks" panel: axe violations before → after, hardcoded values before → after.
-- Realistic sample data, no lorem ipsum. No dependencies except CDNs/fonts; must open by double-clicking.
+## Phase 8 — Prove, lock in, remember
 
-Deliver it the best way the environment allows: a published artifact or inline preview if available; otherwise save the file and say where it is.
+From `references/prove-and-remember.md`:
+1. **Prove:** re-run every scan, re-walk the personas, re-screenshot (`after-*.png`), re-score. **Visual regression** on every screen using a shared component you changed (`npx -y pixelmatch before.png after.png diff.png 0.1`, or side-by-side by eye) — unexpected diffs get fixed before reporting. Same save payload, business validation intact, existing tests pass (run them if quick). Anything fails → fix and re-prove.
+2. **Demo** — one self-contained HTML file in the run folder (published as an artifact or inline preview if the environment allows):
+   - **Before / Fixed / Upgraded** views (stacked on mobile), each with score badge and per-category bars.
+   - Real screenshots embedded (data URIs) with desktop/mobile toggle.
+   - A **live, interactive Fixed view** built with the real design.md tokens as CSS variables: hover/focus, primary button loading → success, empty submit → inline errors + error summary, dependent fields revealing under their parent, section index highlighting and jumping, searchable selects filtering.
+   - Numbered callouts matching issue numbers.
+   - A **Proof panel**: scores, axe / focus / hierarchy / token numbers, walkthrough steps & friction, Effort table — before → after.
+   - Realistic data (no lorem ipsum), no dependencies except CDNs/fonts, opens by double-click. Native/Flutter targets → phone-width HTML mock.
+3. **Lock in:** add a focused test (primary path, dependent reveal, error summary, axe) if the project has a test setup; propose a lint rule against raw values if it has a linter. One line on what was added/proposed.
+4. **design.md:** missing → generate (with approval). Gaps the fix needed → propose the exact rule in design.md's format; on approval append it + Changelog line `- YYYY-MM-DD: <rule> (from ui-fix on <target>)`.
+5. **Memory:** update `.ui-fix/memory.md` — decisions approved/rejected, glossary, screen log row (score before → after, open items). Suggest `.ui-fix/runs/` in `.gitignore`.
 
-For native/Flutter/mobile targets, build the interactive After as a phone-width HTML mock.
+## Phase 9 — Wrap up
 
-## Step 9 — Keep design.md growing
-
-**When design.md is missing**, generate it from what's in the code using `references/design-md-template.md`. Mark anything inferred rather than confirmed with `(inferred)` so the user can check it.
-
-**When design.md exists but has no answer** for something the fix needed (a new state, a component variant, a table pattern):
-- Propose the exact rule to add, in design.md's own format.
-- With the user's OK (or if they asked for it up front), append it to the right section and add a dated Changelog line: `- YYYY-MM-DD: added <rule> (from ui-fix on <target>)`.
-- Never rewrite or delete existing design.md rules on your own — propose, don't impose.
-
-## Step 10 — Wrap up
-
-End with:
-- Score before → after, in one line (and Effort before → after for forms).
-- Recommended upgrades not applied yet, each with its expected gain — ask which ones to do.
-- What changed, in one line.
-- Also-affected screens fixed vs still pending.
-- Anything you couldn't fix and why (needs backend, needs a product decision).
-- design.md additions made or proposed.
+Check the **Definition of done** in `prove-and-remember.md`, then end with:
+- Score before → after (+ Effort and Newcomer steps/friction before → after).
+- What changed, one line.
+- Also-affected screens: fixed vs pending.
+- Recommended upgrades not applied, each with expected gain — ask which to do.
+- Blockers (needs backend / product decision).
+- Guards added, design.md and memory updates.
 
 ---
 
 ## Don'ts
-- Don't skip the design.md check, ever.
-- Don't judge a screen before you know what it's for and what it does — Screen brief first.
-- Don't call a screen fine if section titles look like labels or two names can be confused — that's the first thing a new user hits.
-- Don't invent a new visual style — follow the system.
-- Don't give a fix without a demo.
+
+- Don't judge before the Screen brief, or before reading memory and design.md.
+- Don't report opinions without evidence, or issues without Impact and file:line.
+- Don't call a screen fine if section titles look like labels, names can be confused, dependent fields aren't visibly linked, or keyboard users get stuck.
+- Don't treat "keep my look" as "change nothing visible".
+- Don't leave a 🔴/🟠 unfixed without naming the blocker.
+- Don't change a shared component without visual regression on the screens that use it.
 - Don't inflate the after-score.
-- Don't treat "keep my look" as "change nothing visible" — keep the system, fix the problems.
-- Don't leave a 🔴 or 🟠 unfixed without naming the blocker.
-- Don't run against production.
-- Don't explain UX theory. Say what's wrong, prove it, fix it, show it.
-- Don't touch unrelated files or logic.
+- Don't re-propose what memory says was rejected.
+- Don't run against production, submit real data, or click destructive actions.
+- Don't invent a new visual style, add new libraries, or touch unrelated logic.
+- Don't explain UX theory. Show what's wrong, prove it, fix it, prove the fix.

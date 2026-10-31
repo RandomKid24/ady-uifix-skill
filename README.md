@@ -1,10 +1,12 @@
 # ui-fix
 
-**Point at an ugly or confusing screen. Get told what's wrong, a real fix, and a before/after demo.**
+**The UI fixer that thinks like a senior UI engineer — and proves it.**
 
-`ui-fix` is a skill for AI coding tools (Claude Code, OpenCode, Antigravity, Codex). It checks any page, form, table, modal or single component against your project's `design.md`, measures it, scores it, fixes it in your stack, and shows you the result before you commit.
+Point it at a page, form, table, modal or single component. `ui-fix` works out what the screen is for, walks it as real users, measures everything, fixes it against your `design.md`, proves the fix with before/after numbers and visual regression, and remembers your decisions for next time.
 
-The bar it holds every screen to: **someone who has never seen your app knows what this screen is, what to click, and what happens next — without thinking.**
+Works with **Claude Code, OpenCode, Antigravity, Codex** — and any tool that reads skills.
+
+The bar: **someone who has never seen your app knows what this screen is, what to click, and what happens next — without thinking. Daily users finish in the fewest steps. Nobody loses work.**
 
 ---
 
@@ -14,47 +16,20 @@ The bar it holds every screen to: **someone who has never seen your app knows wh
 npx github:RandomKid24/ady-uifix-skill
 ```
 
-That's it. The installer finds the AI tools on your machine and asks which ones to install into.
-
-```
-Install ui-fix for:  (global)
-
-  1. Claude Code  detected   ~/.claude/skills/ui-fix
-  2. OpenCode     detected   ~/.config/opencode/skills/ui-fix
-  3. Antigravity  not found  ~/.gemini/antigravity/skills/ui-fix
-  4. Codex CLI    not found  ~/.codex/skills/ui-fix
-
-Pick numbers (comma separated) or "a" for all [1,2]:
-```
-
-Press Enter to install into everything detected. Restart your AI tool afterwards.
-
-### Other ways
+Detects your AI tools and asks where to install. Press Enter for all detected. Restart your tool afterwards.
 
 ```bash
-# No questions, install into all detected tools
-npx github:RandomKid24/ady-uifix-skill -y
-
-# Pick tools directly
-npx github:RandomKid24/ady-uifix-skill --claude --opencode
-
-# Only for the project you're in (commits with the repo, whole team gets it)
-npx github:RandomKid24/ady-uifix-skill --project
-
-# Any other tool — point at its skills folder
-npx github:RandomKid24/ady-uifix-skill --dir ~/.some-tool/skills
-
-# See where it goes and what's detected
-npx github:RandomKid24/ady-uifix-skill --list
-
-# Update: just run the install again (it overwrites the old copy)
-# Remove:
-npx github:RandomKid24/ady-uifix-skill --uninstall
+npx github:RandomKid24/ady-uifix-skill -y                    # no questions, all detected tools
+npx github:RandomKid24/ady-uifix-skill --claude --opencode   # pick tools
+npx github:RandomKid24/ady-uifix-skill --project             # this repo only (team gets it via git)
+npx github:RandomKid24/ady-uifix-skill --dir <skills-folder> # any other tool
+npx github:RandomKid24/ady-uifix-skill --list                # where it goes / what's detected
+npx github:RandomKid24/ady-uifix-skill --uninstall           # remove
 ```
 
-Needs **Node 18+**. No dependencies.
+**Update:** run the install again. If npx serves an old copy: `rm -rf ~/.npm/_npx` first.
 
-### Where it installs
+Needs Node 18+. No dependencies.
 
 | Tool | Global | `--project` |
 |---|---|---|
@@ -63,70 +38,81 @@ Needs **Node 18+**. No dependencies.
 | Antigravity | `~/.gemini/antigravity/skills/ui-fix` | `.agent/skills/ui-fix` |
 | Codex CLI | `~/.codex/skills/ui-fix` | `.codex/skills/ui-fix` |
 
-If your tool reads skills from somewhere else, use `--dir <path>`.
-
-### Manual install
-
-Copy the `skills/ui-fix` folder into your tool's skills folder (table above). Done.
+Manual: copy `skills/ui-fix` into your tool's skills folder.
 
 ---
 
 ## Use
 
+**Claude Code**
 ```
-/ui-fix src/pages/Employees.tsx
-/ui-fix the add-invoice form
-/ui-fix components/ui/Button.tsx
-/ui-fix http://localhost:5173/leaves
+/ui-fix src/pages/jobs/JobForm.tsx
+/ui-fix quick the vendor list
+/ui-fix sweep src/pages/hr
+/ui-fix handoff the add-invoice form
 ```
 
-Or just say it in plain words — "this vendor form is confusing, fix it", "the dashboard looks off" — and the skill kicks in.
+**OpenCode / Antigravity / Codex** — name it in plain words:
+```
+use ui-fix on src/pages/jobs/JobForm.tsx
+use ui-fix sweep on src/pages/hr
+```
 
-### Modes
+Or just describe the problem: *"this form is confusing, fix it"*, *"the dashboard looks off"*.
 
-| Mode | Example | What you get |
-|---|---|---|
-| `fix` *(default)* | `/ui-fix src/pages/Employees.tsx` | Audit → score → fix → verify → demo |
-| `quick` | `/ui-fix quick the login page` | Audit + score + report only. No code touched |
-| `sweep` | `/ui-fix sweep src/pages/hr` | Audits every screen in the folder, ranks them by score, fixes shared root causes first |
+Point it at a file, a folder, a local URL (`http://localhost:5173/jobs/new`), a screen by name, or a pasted screenshot.
+
+| Mode | What you get |
+|---|---|
+| `fix` *(default)* | Everything: understand → see → walk → measure → judge → fix → prove → remember |
+| `quick` | Full audit + score + report. No code touched |
+| `sweep` | Audits every screen in a folder, ranks them, fixes shared root causes first |
+| `handoff` | Audit + a paste-ready implementation prompt for another coding agent |
 
 ---
 
-## What it does
+## How it works
 
-1. **Understands the screen before judging it.** Works out what it's for, who uses it and how often, what data it loads and saves (reads the API and backend too), the business rules, where users come from and go next, what every element is for, and the shortest path to get the job done. Shows you a short *Screen brief* so you can confirm it understood — and catches UI ↔ backend mismatches like fields the server requires but the form doesn't mark.
-2. **Reads your `design.md`.** Colors, fonts, spacing, components, rules — every fix follows it. No `design.md`? It tells you, works from your Tailwind config / CSS variables / theme for now, and offers to generate one.
-3. **Checks hierarchy and naming.** Measures section titles vs field labels in the browser (size, weight, spacing) and flags when they look alike. Reads the labels like a stranger would: same name for a section and its field, near-identical names, codes like MOC/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No groups with no visible selection. Gives you a rename table.
-4. **Checks dependent fields and way-finding.** Clicks each Yes/No and option in the browser to map which fields depend on which, then checks the child sits right under its parent, hides instead of silently greying out (or says why it's disabled), and resets when the parent changes. On long forms it adds numbered, specific section titles, a sticky section index with progress, and section icons from your icon set.
-5. **Looks at the real thing.** Runs your dev server, screenshots the target at desktop and 375px mobile, and triggers states like empty submit and focus. *(Local / dev / staging only — never production.)*
-6. **Measures it.**
-   - **axe-core** accessibility check with real numbers ("contrast 2.8:1, needs 4.5:1")
-   - **Token scan** for hardcoded colors, px values, Tailwind arbitrary values and inline styles that should be design tokens
-   - Tap targets under 44px, horizontal overflow on mobile
-7. **Checks it like a first-time user would.** One obvious main button? Labels that say what happens? A way out? Feedback after every click? Plus checks for the kind of UI it is — forms, tables, dashboards, modals, navigation, single components, data-entry screens, public pages.
-8. **Scores it 0–100** across 6 categories, before and after.
-9. **Tells you bluntly what's wrong**, with file:line and evidence, tagged 🔴 broken · 🟠 confusing · 🟡 off-system.
-10. **Fixes the root, not just the page.** If the problem lives in a shared `Button` or `Input`, it fixes that component and lists every other screen it also fixes.
-11. **Shows you the result.** A self-contained HTML demo: before vs after side by side, real screenshots, a live clickable "after" built with your real tokens, numbered callouts, scores, and the axe/token numbers before → after.
-12. **Makes forms faster to fill.** For forms and data-entry screens it counts the effort (fields, dropdowns, decisions, clicks, tabs) and cuts it down: derives and defaults values, swaps wrong controls (2-option dropdown → one-click toggle, 50-option dropdown → searchable), spells out codes, wires dependent dropdowns, groups long tabs into sections, and adds error summaries that jump to the field.
-13. **Fixes what's required, proposes the rest.** Every 🔴 and 🟠 gets fixed even if you said "keep my look" — it keeps your design system, not your problems. Bigger upgrades are shown as a separate "Upgraded" view in the demo for you to approve.
-14. **Grows your `design.md`.** When a fix needs a rule your design system doesn't have yet, it proposes the exact line and adds it (with a changelog entry) once you OK it. It never rewrites your existing rules on its own.
+| Phase | What happens |
+|---|---|
+| **0. Remember** | Reads `.ui-fix/memory.md` (past decisions, rejected ideas, glossary) and your `design.md`. No design.md? Says so and offers to generate one |
+| **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
+| **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
+| **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, Marathi/Devanagari, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
+| **4. Measure** | Six scanners: accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
+| **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
+| **6. Report** | Blunt and short. Hierarchy, rename, dependency, effort, stress and consistency tables |
+| **7. Fix** | Every 🔴 and 🟠 fixed (with your existing design system) or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve |
+| **8. Prove** | Re-scans, re-walks, re-scores. **Visual regression** on every screen using a changed shared component. Checks the save payload and tests still pass. Builds a before / fixed / upgraded demo with a proof panel. Adds a regression test or lint rule. Updates design.md and memory |
+
+### What it catches
+
+- **Hierarchy & naming** — section titles that look like field labels, "Packaging" under "Packaging", Tray Type vs Tray MOC, codes like MOC/FAT/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No with no visible selection
+- **Dependent fields** — clicks every choice to map which fields depend on which; flags children far from their parent or greyed out with no reason; checks reset-on-change and hidden values not being saved
+- **Way-finding** — long forms without numbered sections, section index, progress, or icons; catch-all sections like "Other"
+- **Forms & data entry** — fields that could be derived, defaulted or deferred; wrong controls (2-option dropdowns, 50-option plain selects); dropdown order and labels; validation and error summary; lost work
+- **Keyboard** — tab order vs visual order, invisible focus, clickable divs keyboard users can't reach
+- **Stress** — what breaks with long text, Indic scripts, 200% zoom, lots of data, slow network, errors
+- **Accessibility** — real axe numbers ("contrast 2.8:1, needs 4.5:1"), tap targets, overflow
+- **Design-system drift** — hardcoded colours, px, Tailwind arbitrary values, inline styles
+- **Consistency** — same job, same pattern, same names across screens
+- Plus tables, dashboards, modals, navigation, single components, states (loading / empty / error / disabled / success)
 
 ### Example report
 
 ```
-## EmployeeForm — score 48/100
+## New Job form — 48/100
+Purpose: Sales coordinators create a manufacturing job for a confirmed order. Daily, desktop.
 
-🔴 1. Primary action is invisible — "Save" is a grey ghost button next to a
-      bright red "Delete". Users will hit the wrong one. (EmployeeForm.tsx:142)
-🔴 2. Placeholders used as labels — type one character and the field name is gone. axe: label ×6.
-🟠 3. "Submit" tells nobody anything. It creates an employee — say "Add employee".
-🟡 4. #1a73e8 hardcoded ×6 — design.md says --signal.
+Walkthrough: Newcomer 14 steps · 5 friction · completed ✓ | Keyboard ✗ stuck at Door access type
 
-Root cause: 1 and 2 come from components/ui/Input.tsx and Button.tsx
-— also affected: LeaveForm, ExpenseForm, VendorForm.
+🔴 [27] 1. Section titles look like labels — 16px/500 vs labels 14px/500 (1.14×). Newcomer
+          couldn't tell where sections start. [Proximity] JobForm.tsx:212
+🔴 [18] 2. Tab jumps from Capacity to Save, skipping Model No. [A11y] JobForm.tsx:88
+🟠 [18] 3. "Door access type" sits in the other column and greys out silently. [Proximity][Visibility]
+🟡 [4]  4. #1a73e8 ×6 — design.md says --signal.
 
-Verdict: Usable if you built it. Anyone else is guessing.
+Root cause: 1 comes from components/form/Section.tsx — also affected: LeaveForm, VendorForm.
 ```
 
 ### Score
@@ -136,40 +122,57 @@ Verdict: Usable if you built it. Anyone else is guessing.
 | Clarity, hierarchy, naming & way-finding | 25 |
 | Usability for this kind of UI | 20 |
 | States & feedback | 15 |
-| Accessibility | 15 |
-| Design-system adherence | 15 |
-| Responsive | 10 |
+| Accessibility & keyboard | 15 |
+| Design-system & consistency | 15 |
+| Responsive & stress | 10 |
 
-Each issue costs 🔴 8 · 🟠 4 · 🟡 2 points in its category.
+🔴 −8 · 🟠 −4 · 🟡 −2 per issue in its category. Always shown before and after.
 
 ---
 
+## Project files it creates
+
+```
+your-project/
+├── design.md                  # your design system (generated if missing, with your OK)
+└── .ui-fix/
+    ├── memory.md              # decisions, rejected ideas, glossary, score history — commit this
+    └── runs/<date>-<screen>/  # screenshots, scan results, demo.html — add to .gitignore
+```
+
 ## Get the most out of it
 
-- **Add a `design.md`** to your project root. That's what keeps fixes consistent with your system. Don't have one? Run `/ui-fix` once and let it generate a starter from your code, then clean up the lines marked `(inferred)`.
-- **Have your dev server runnable** so it can take real screenshots and verify the fix. Without a browser it still works from code, just without the real before/after.
-- **Give it a browser.** Claude in Chrome, a built-in browser pane, or Playwright all work.
+- **Have a `design.md`.** No design.md? Let the first run generate one, then fix the `(inferred)` lines.
+- **Keep your dev server runnable** with seed/test data. Real screenshots, walkthroughs and visual regression need it. Without a browser it still works from code — just with less proof.
+- **Give it a browser** — Claude in Chrome, a built-in browser pane, or Playwright.
+- **Say yes or no to upgrades.** It remembers both, so it never argues the same point twice.
+- **Local / dev / staging only.** It clicks choices and fills fields while testing. Never point it at production.
+
+---
 
 ## What's inside
 
 ```
 skills/ui-fix/
-├── SKILL.md                         # the skill
+├── SKILL.md                              # the pipeline
 ├── references/
-│   ├── understand-the-screen.md      # purpose, data flow, element inventory, Screen brief
-│   ├── hierarchy-and-naming.md       # headings vs labels, confusing names, placeholders
-│   ├── dependencies-and-navigation.md # parent→child fields, section index, numbering, icons
-│   ├── forms-and-data-entry.md       # playbook for forms, dropdowns and data entry
-│   └── design-md-template.md         # template for generating a missing design.md
+│   ├── understand-the-screen.md          # purpose, data flow, element inventory, Screen brief
+│   ├── walkthrough-and-stress.md         # personas, friction log, stress tests, consistency
+│   ├── hierarchy-and-naming.md           # headings vs labels, confusing names, placeholders
+│   ├── dependencies-and-navigation.md    # parent→child fields, section index, numbering, icons
+│   ├── forms-and-data-entry.md           # effort, controls, dropdowns, validation
+│   ├── prove-and-remember.md             # impact ranking, proof, regression guard, memory, hand-off
+│   └── design-md-template.md             # starter design.md
 └── scripts/
-    ├── dependency-scan.js           # flips choices to map dependent fields (dev only)
-    ├── hierarchy-scan.js            # measures headings vs labels, finds confusing names
-    ├── token-scan.mjs               # finds hardcoded colors/sizes/inline styles
-    └── axe-run.js                   # runs axe-core + tap-target/overflow checks in the browser
+    ├── axe-run.js                        # accessibility + tap targets + overflow (browser)
+    ├── hierarchy-scan.js                 # heading/label styles, spacing, naming problems (browser)
+    ├── dependency-scan.js                # maps dependent fields by flipping choices (browser, dev only)
+    ├── focus-scan.js                     # tab order, focus visibility, unreachable clickables (browser)
+    ├── stress-text.js                    # pseudo-localization, Devanagari, long values (browser, reversible)
+    └── token-scan.mjs                    # hardcoded colours/sizes/inline styles (Node)
 ```
 
-You can run the token scan on its own too:
-
+Run the token scan on its own:
 ```bash
 node ~/.claude/skills/ui-fix/scripts/token-scan.mjs src/pages
 ```
