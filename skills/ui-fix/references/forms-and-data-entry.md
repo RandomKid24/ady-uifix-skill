@@ -25,7 +25,7 @@ Report them as an **Effort table** (before → after). A good fix makes these nu
 ## 2. Remove before you redesign
 
 Best field is the one the user never has to fill. For every field ask, in order:
-1. **Can we derive it?** From another field (capacity → model no., chamber size, power), from the logged-in user, the date, the selected customer/project, the last record. Derive it and show it read-only (with an "edit" option if overriding is legit).
+1. **Can we derive it?** From another field (postal code → city and state, product → price and tax rate, customer → currency and terms), from the logged-in user, the date, the selected customer/project, the last record. Derive it and show it read-only (with an "edit" option if overriding is legit).
 2. **Can we default it?** The most common value, the user's last-used value, the company default. A good default turns a decision into a glance.
 3. **Is it needed now?** If it's only needed later (approval, dispatch, invoicing), move it to that stage or behind "More details".
 4. **Is it needed at all?** If nothing reads it, flag it to the user as removable — don't silently delete.
@@ -53,10 +53,10 @@ Wrong control type is the #1 cause of slow forms.
 
 For every dropdown, check:
 - **Option order**: most used first, or logical order (sizes ascending), or alphabetical — never database insert order.
-- **Option labels**: full words a new user understands. Codes/abbreviations go in brackets after the name: "Material of Construction (MOC)", "SS 316L", not "M3".
-- **Placeholder** reads as an instruction ("Select capacity"), has readable contrast, and is not selectable as a value.
+- **Option labels**: full words a new user understands. Codes/abbreviations go in brackets after the name: "Net 30 days", not "N30"; "Stock keeping unit (SKU)".
+- **Placeholder** reads as an instruction ("Select country"), has readable contrast, and is not selectable as a value.
 - **Searchable** once there are more than ~10 options.
-- **Dependent dropdowns (cascading)**: when B depends on A, B is disabled with a hint ("Pick capacity first") until A is chosen; changing A resets or re-filters B and says so. Never show options in B that are invalid for A.
+- **Dependent dropdowns (cascading)**: when B depends on A, B is disabled with a hint ("Choose a country first") until A is chosen; changing A resets or re-filters B and says so. Never show options in B that are invalid for A.
 - **Empty / loading / error** states for options fetched from the server ("Loading items…", "No vendors found — add one", "Couldn't load, retry").
 - **"Other" escape hatch** when the list can't cover everything: picking it reveals a text field.
 - **Create inline** when the user is likely to need a new master record ("+ Add new vendor") instead of making them leave the form.
@@ -65,8 +65,8 @@ For every dropdown, check:
 ## 5. Structure & flow
 
 - **Required first, optional later.** Put what the user must fill at the top of each section; optional fields grouped below or behind "More details".
-- **Group into sections** with clear headings once there are more than ~8 fields. Each section = one idea ("Customer", "Machine specs", "Electrical", "Delivery").
-- **Long forms (25+ fields):** split into steps with a progress indicator, or sections with a sticky side/top index showing completion per section (e.g. "Specs 6/9"). Don't hide required fields in a tab the user may never open — show which tabs have missing/invalid fields (dot or count on the tab).
+- **Group into sections** with clear headings once there are more than ~8 fields. Each section = one idea ("Customer", "Items", "Payment", "Delivery").
+- **Long forms (25+ fields):** split into steps with a progress indicator, or sections with a sticky side/top index showing completion per section (e.g. "Payment 3/5"). Don't hide required fields in a tab the user may never open — show which tabs have missing/invalid fields (dot or count on the tab).
 - **Layout**: one column by default; two columns only for short, related fields (Min/Max, City/PIN). Labels above fields.
 - **Sticky action bar** on long forms: Save / Cancel always visible.
 - **Field order follows the real-world order** the user works in (the order on their paper form, the order the customer gives info).
@@ -74,11 +74,11 @@ For every dropdown, check:
 ## 6. Speed for people who fill this every day
 
 - **Duplicate / start from previous**: "Copy from job #…" or "Use last values" for repetitive entries.
-- **Templates / presets** if the same combinations come up often (e.g. "Standard 300L autoclave").
+- **Templates / presets** if the same combinations come up often (e.g. "Standard monthly retainer", "Domestic shipment").
 - **Remember last-used values** per user for fields that usually repeat.
 - Full **keyboard flow**: Tab moves in visual order, Enter in a select picks, typing jumps to options, Ctrl/Cmd+S saves, Esc cancels dialogs.
 - **Autofocus** the first field that actually needs input.
-- **Auto-format as they type** (GST no., phone, PIN), not error after.
+- **Auto-format as they type** (phone, postal code, tax/VAT ID, card number), not error after.
 
 ## 7. Validation & not losing work
 

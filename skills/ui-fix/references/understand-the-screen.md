@@ -9,7 +9,7 @@ Work from the code first (it's the truth), then the running UI, then ask the use
 ## 1. Purpose — what is this screen for?
 
 Answer in one sentence: **"<Who> uses this to <do what> so that <outcome>."**
-e.g. "Sales coordinators use this to create a manufacturing job for a confirmed order so production can start building the machine."
+e.g. "Accounts staff use this to create an invoice for a customer so they get billed on time." · "Shoppers use this to pay for their cart so the order ships." · "Admins use this to set who can see which reports."
 
 Find it from: route/page name, page title, menu placement, the API it calls, the model/table it writes, comments, README/SRS/docs in the repo, commit messages touching the file.
 
@@ -22,7 +22,7 @@ The job type decides what "good" means: a Create form is judged on speed and err
 
 - **Who:** role(s) that use it (from auth/permissions code, menu config, design.md, docs).
 - **How often:** once (onboarding), occasionally, or **many times a day** (power users — speed and keyboard matter more than hand-holding).
-- **Where/how:** desk with mouse and keyboard, tablet on a shop floor, phone in the field, kiosk, shared PC.
+- **Where/how:** desk with mouse and keyboard, tablet on a counter or warehouse floor, phone on the move, kiosk, shared PC.
 - **What they know:** domain experts who know the codes, or new/temporary staff who don't.
 - **Language:** what language the users read best.
 
@@ -35,7 +35,7 @@ Read the code end to end:
 - **Data out:** what the save/submit sends — endpoint, payload shape, model/table written.
 - **Business rules:** backend validation, required fields on the server, unique checks, cross-field rules, permissions, status transitions. These must be reflected in the UI (shown up front, not discovered on save).
 - **Side effects:** what happens after save — record created, status changed, email/notification sent, stock moved, document generated, another screen unlocked.
-- **Dependencies between fields:** which choices change other options or values (capacity → model, customer → address, item → unit/price).
+- **Dependencies between fields:** which choices change other options or values (country → state, customer → billing address and currency, product → unit price and tax).
 - **Mismatches:** fields the UI collects that the API ignores; fields the API requires that the UI doesn't mark required; validation in the backend only; options hardcoded in the UI that should come from master data. These are real bugs — report them.
 
 ## 4. Where it sits in the flow
@@ -52,9 +52,9 @@ List every meaningful element on the screen. For a large form, group by section.
 
 | Element | Type | Purpose | Data (source → destination) | Required? | Used how often | Notes |
 |---|---|---|---|---|---|---|
-| Capacity | dropdown, 6 opts | picks machine size | master list → job.capacity | yes | every job | drives Model No. |
-| Temp Range | 2 numbers | sterilisation range | user → job.temp_min/max | no | most jobs | unit not shown |
-| Export PDF | button | prints job sheet | job → pdf | — | rare | sits next to Save, same weight |
+| Customer | searchable select | who gets billed | customers API → invoice.customer_id | yes | every invoice | drives address, currency |
+| Due date | date | when payment is due | user → invoice.due_date | yes | every invoice | could default from payment terms |
+| Export PDF | button | download a copy | invoice → pdf | — | rare | sits next to Save, same weight |
 
 Flag:
 - **No clear purpose** (nothing reads it, no one knows why it's there) → ask whether it can go.
@@ -65,11 +65,11 @@ Flag:
 ## 6. Primary task path
 
 Write the shortest path a typical user takes to finish the main job, step by step:
-1. Open "New job" from the order
+1. Open "New invoice" from the customer page
 2. Pick customer (already known — should be prefilled)
-3. Pick capacity
+3. Add line items
 4. … 
-n. Save → sees job number → prints job sheet
+n. Save → sees invoice number → sends it
 
 Count steps and clicks. This path is what your fix must make shorter, clearer and safer. Any element that isn't on the path should not compete with it visually.
 

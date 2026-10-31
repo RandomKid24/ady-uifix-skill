@@ -46,21 +46,21 @@ Manual: copy `skills/ui-fix` into your tool's skills folder.
 
 **Claude Code**
 ```
-/ui-fix src/pages/jobs/JobForm.tsx
+/ui-fix src/pages/checkout/CheckoutForm.tsx
 /ui-fix quick the vendor list
-/ui-fix sweep src/pages/hr
+/ui-fix sweep src/pages/settings
 /ui-fix handoff the add-invoice form
 ```
 
 **OpenCode / Antigravity / Codex** — name it in plain words:
 ```
-use ui-fix on src/pages/jobs/JobForm.tsx
-use ui-fix sweep on src/pages/hr
+use ui-fix on src/pages/checkout/CheckoutForm.tsx
+use ui-fix sweep on src/pages/settings
 ```
 
 Or just describe the problem: *"this form is confusing, fix it"*, *"the dashboard looks off"*.
 
-Point it at a file, a folder, a local URL (`http://localhost:5173/jobs/new`), a screen by name, or a pasted screenshot.
+Point it at a file, a folder, a local URL (`http://localhost:5173/checkout`), a screen by name, or a pasted screenshot.
 
 | Mode | What you get |
 |---|---|
@@ -78,7 +78,7 @@ Point it at a file, a folder, a local URL (`http://localhost:5173/jobs/new`), a 
 | **0. Remember** | Reads `.ui-fix/memory.md` (past decisions, rejected ideas, glossary) and your `design.md`. No design.md? Says so and offers to generate one |
 | **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
 | **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
-| **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, Marathi/Devanagari, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
+| **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, other scripts (Devanagari, Arabic, CJK, Thai, Cyrillic), right-to-left, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
 | **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then seven scanners: **layout & spacing**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
 | **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
 | **6. Report** | Blunt and short. A **layout blueprint** that says where every component goes, how wide, with what spacing — and why. Hierarchy, rename, dependency, effort, stress and consistency tables |
@@ -88,12 +88,12 @@ Point it at a file, a folder, a local URL (`http://localhost:5173/jobs/new`), a 
 ### What it catches
 
 - **Layout & spacing** — forms stretched 1800px wide, Yes/No buttons floating in empty columns, a full-width dropdown next to a tiny button pair, number fields as wide as a paragraph, zig-zag 2-column grids of unrelated fields, near-miss alignment, random gaps (13px here, 22px there), ragged rows, children placed in the wrong column
-- **Hierarchy & naming** — section titles that look like field labels, "Packaging" under "Packaging", Tray Type vs Tray MOC, codes like MOC/FAT/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No with no visible selection
+- **Hierarchy & naming** — section titles that look like field labels, a section and its field with the same name, near-identical labels, codes like SKU/PO/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No with no visible selection
 - **Dependent fields** — clicks every choice to map which fields depend on which; flags children far from their parent or greyed out with no reason; checks reset-on-change and hidden values not being saved
 - **Way-finding** — long forms without numbered sections, section index, progress, or icons; catch-all sections like "Other"
 - **Forms & data entry** — fields that could be derived, defaulted or deferred; wrong controls (2-option dropdowns, 50-option plain selects); dropdown order and labels; validation and error summary; lost work
 - **Keyboard** — tab order vs visual order, invisible focus, clickable divs keyboard users can't reach
-- **Stress** — what breaks with long text, Indic scripts, 200% zoom, lots of data, slow network, errors
+- **Stress** — what breaks with long text, other scripts, right-to-left, 200% zoom, lots of data, slow network, errors
 - **Accessibility** — real axe numbers ("contrast 2.8:1, needs 4.5:1"), tap targets, overflow
 - **Design-system drift** — hardcoded colours, px, Tailwind arbitrary values, inline styles
 - **Consistency** — same job, same pattern, same names across screens
@@ -102,18 +102,18 @@ Point it at a file, a folder, a local URL (`http://localhost:5173/jobs/new`), a 
 ### Example report
 
 ```
-## New Job form — 48/100
-Purpose: Sales coordinators create a manufacturing job for a confirmed order. Daily, desktop.
+## Checkout form — 48/100
+Purpose: Shoppers pay for their cart so the order ships. Occasional use, mostly mobile.
 
-Walkthrough: Newcomer 14 steps · 5 friction · completed ✓ | Keyboard ✗ stuck at Door access type
+Walkthrough: Newcomer 12 steps · 5 friction · completed ✓ | Keyboard ✗ stuck at Payment method
 
 🔴 [27] 1. Section titles look like labels — 16px/500 vs labels 14px/500 (1.14×). Newcomer
-          couldn't tell where sections start. [Proximity] JobForm.tsx:212
-🔴 [18] 2. Tab jumps from Capacity to Save, skipping Model No. [A11y] JobForm.tsx:88
-🟠 [18] 3. "Door access type" sits in the other column and greys out silently. [Proximity][Visibility]
-🟡 [4]  4. #1a73e8 ×6 — design.md says --signal.
+          couldn't tell where Shipping ends and Payment starts. [Proximity] CheckoutForm.tsx:212
+🔴 [18] 2. Tab jumps from Country to Pay, skipping Postal code. [A11y] CheckoutForm.tsx:88
+🟠 [18] 3. "Card number" sits in the other column and greys out silently. [Proximity][Visibility]
+🟡 [4]  4. #1a73e8 ×6 — design.md says --brand-primary.
 
-Root cause: 1 comes from components/form/Section.tsx — also affected: LeaveForm, VendorForm.
+Root cause: 1 comes from components/form/Section.tsx — also affected: SignupForm, AddressForm.
 ```
 
 ### Score
@@ -172,7 +172,7 @@ skills/ui-fix/
     ├── hierarchy-scan.js                 # heading/label styles, spacing, naming problems (browser)
     ├── dependency-scan.js                # maps dependent fields by flipping choices (browser, dev only)
     ├── focus-scan.js                     # tab order, focus visibility, unreachable clickables (browser)
-    ├── stress-text.js                    # pseudo-localization, Devanagari, long values (browser, reversible)
+    ├── stress-text.js                    # pseudo-localization, other scripts, RTL, long values (browser, reversible)
     └── token-scan.mjs                    # hardcoded colours/sizes/inline styles (Node)
 ```
 

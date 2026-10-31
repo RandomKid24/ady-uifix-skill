@@ -6,7 +6,7 @@ Read this for any form or screen with more than one section, or any field that c
 
 ## Part 1 — Dependent fields (parent → child)
 
-A **parent** field controls a **child**: "Door Access System: Yes/No" → "Door access type"; "Scanner: Yes/No" → "Scanner make"; "Capacity" → "Model No."; "Customer" → "Site address". Users must be able to see that link without reading code.
+A **parent** field controls a **child**: "Ship to a different address: Yes/No" → address fields; "Payment method: Card" → card fields; "Country" → "State"; "Customer" → "Billing address". Users must be able to see that link without reading code.
 
 ### 1. Map the dependencies first
 
@@ -19,12 +19,12 @@ A **parent** field controls a **child**: "Door Access System: Yes/No" → "Door 
 - **Child sits right under (or right after) its parent.** Never in another column, another row group, or another section. Parent left / child right in a 2-column grid only if they're on the same row and visually joined. 🟠 if separated; 🔴 if the child is in another section or tab.
 - **Child looks attached**: indented, or a left border/connector line, or a nested sub-card, or grouped in one bordered box with the parent. The parent + its children read as one unit.
 - **Prefer hide over grey-out** when the child is meaningless without the parent (No access system → no access type). Reveal it when the parent turns on, with a smooth expand. Greyed-out fields still take space, still get read, and look broken.
-- **If you must disable** (layout stability, or the user needs to see what's possible), say why right there: helper text "Turn on Door Access System to choose a type" — never a silent grey box. Disabled fields still keep readable contrast.
-- **Label the child in relation to its parent** where it helps: "Access type" under "Door access system", "Make" under "Scanner" — the nesting carries the context, so the child label can be short.
-- **Changing the parent clears or re-filters the child, and says so** ("Model No. updated for 300 L"). Never keep a stale child value that's now invalid. Never silently submit hidden values — clear them or exclude them.
+- **If you must disable** (layout stability, or the user needs to see what's possible), say why right there: helper text "Turn on Email digest to choose how often" — never a silent grey box. Disabled fields still keep readable contrast.
+- **Label the child in relation to its parent** where it helps: "Frequency" under "Email digest", "Card number" under "Pay by card" — the nesting carries the context, so the child label can be short.
+- **Changing the parent clears or re-filters the child, and says so** ("State list updated for Canada"). Never keep a stale child value that's now invalid. Never silently submit hidden values — clear them or exclude them.
 - **Required follows visibility**: a child is required only when shown/enabled. The `*` appears when it becomes required.
 - **Chains** (A → B → C): show as a clear step order, top to bottom; each level indented or numbered.
-- **Many Yes/No feature toggles in one section** (GSM, Scanner, Hooter, Door access, FAT, RAAS…): use a checklist of features ("Select the accessories this machine needs"), each checked item expanding its own details. One click per feature instead of two, and the children appear exactly where they belong.
+- **Many Yes/No feature toggles in one section** (add-ons, options, permissions, notification channels…): use a checklist ("Choose the add-ons for this plan"), each checked item expanding its own details. One click per feature instead of two, and the children appear exactly where they belong.
 
 Report: Dependency map + each broken link as an issue.
 
@@ -36,8 +36,8 @@ Once a form/page has **4+ sections or needs scrolling more than ~2 screens**, us
 
 ### 3. Section titles
 
-- **Numbered**: "1. Machine basics", "2. Chamber", … "7. Accessories". Numbers make the order and progress obvious and give people something to say ("check section 5").
-- **Specific names**, not catch-alls. "Other Accessories" → "Alerts & access control", "Testing & compliance". If a section is a junk drawer, split or rename it. Catch-all names ("Other", "Misc", "Additional", "General", "More") → 🟠.
+- **Numbered**: "1. Customer", "2. Items", "3. Shipping", … "6. Review". Numbers make the order and progress obvious and give people something to say ("check section 5").
+- **Specific names**, not catch-alls. "Other settings" → "Notifications", "Privacy & security". If a section is a junk drawer, split or rename it. Catch-all names ("Other", "Misc", "Additional", "General", "More") → 🟠.
 - One-line description under the title when the purpose isn't obvious.
 - Show **completion per section** where it helps: "3/5 filled", or a ✓ when done, a red dot when something's missing/invalid.
 
@@ -52,7 +52,7 @@ Once a form/page has **4+ sections or needs scrolling more than ~2 screens**, us
 
 Icons help scanning — only when they're consistent and meaningful.
 - Use the **project's icon set** (check design.md / existing components: lucide, heroicons, material, font-awesome…). Don't add a new library.
-- **One icon per section title** (and optionally per major feature toggle), picked for meaning: bell for alerts, lock/key for access, clipboard-check for testing/compliance, box for packaging, thermometer for temperature, zap for electrical.
+- **One icon per section title** (and optionally per major feature toggle), picked for meaning: bell for notifications, lock for security, credit-card for payment, truck for shipping, user for profile, file for documents.
 - Same size and colour everywhere, aligned with the text, `aria-hidden="true"` when the text already says it.
 - **Never icon-only** for anything a user has to understand or click. Icon + text, always.
 - If an icon doesn't have an obvious meaning, leave it out — a wrong icon is worse than none.
@@ -61,6 +61,6 @@ Add the section icon and numbering rule to design.md if it isn't there (Step 9).
 
 ### 6. Long-form layout checks
 
-- 2-column grids: each row should hold related fields, read left→right then down. Unrelated pairs side by side ("Pipe length" next to "RAAS system") → regroup.
+- 2-column grids: each row should hold related fields, read left→right then down. Unrelated pairs side by side ("Delivery notes" next to "Discount code") → regroup.
 - Fields with units show the unit in the input ("m") and contain a number — never "NA" (see hierarchy-and-naming).
 - The page shows where you are (index highlight) and how far you have to go (numbered sections or progress).

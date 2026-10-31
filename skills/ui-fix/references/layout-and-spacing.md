@@ -23,7 +23,7 @@ Then run `scripts/layout-scan.js` to back every observation with numbers.
 ## 2. Grid & alignment
 
 - Pick **one grid** for the screen: usually 12 columns (or the design system's grid). Every block spans whole columns. No free-floating widths.
-- **Forms**: default to **one column**. Use 2 columns only for short, related pairs (Min/Max, City/PIN, Start/End, First/Last name). A 2-column grid filled with unrelated fields in "next free slot" order (GSM left, Scanner right) creates a zig-zag reading path → 🟠.
+- **Forms**: default to **one column**. Use 2 columns only for short, related pairs (Min/Max, City/PIN, Start/End, First/Last name). A 2-column grid filled with unrelated fields in "next free slot" order creates a zig-zag reading path → 🟠.
 - **Align edges**: labels, inputs and section titles in a column share one left edge. Edges that are 1–8px apart (near-misses) look like mistakes → 🟡/🟠.
 - **Align rows**: blocks side by side share a top edge; their controls share a baseline. If one block in a row is much taller (help text, a wrapping label), the row looks ragged → 🟡.
 - **Max width**: forms read best at ~**640–960px** wide content. A form stretched across 1800px makes eyes travel too far between label and the next field and leaves controls lost in space → 🟠. Dashboards and tables may go wider.
@@ -93,31 +93,32 @@ For a section of many Yes/No features (accessories, options), the clean layout i
 Don't just list problems — specify the new layout. Produce a blueprint for each affected section:
 
 ```
-### Layout blueprint — 7. Alerts & access control   (container 880px, 12-col grid, 24px field gap, 48px section gap)
+### Layout blueprint — 4. Notifications   (container 800px, 12-col grid, 24px field gap, 48px section gap)
 
-Accessories (checklist, 2 columns of checkboxes, cols 1–12)
-  ☐ GSM mobile alert            ☐ Hooter
-  ☐ Barcode scanner             ☐ RAAS
-  ☐ Door access system
-    └ when Scanner ✓ → Scanner make [select, cols 1–6] (indented 24px, directly under Scanner)
-    └ when Door access ✓ → Door access type [select, cols 1–6] (indented, under Door access)
+Channels (checklist, one column, cols 1–12)
+  ☐ Email
+    └ when ✓ → Email frequency [segmented: Instant / Daily / Weekly, fit content] (indented 24px, directly under Email)
+  ☐ SMS
+    └ when ✓ → Mobile number [tel, 200px] (indented, under SMS)
+  ☐ Push notifications
 
-Compliance (cols 1–12)
-  URS compliance needed?  (•) Yes ( ) No        [radio, fit content]
-  Factory Acceptance Test (FAT)  (•) Yes ( ) No [radio, fit content]
+Quiet hours (cols 1–12)
+  Pause notifications at night?  (•) Yes ( ) No   [radio, fit content]
+  From [time, 140px]   To [time, 140px]            [one row — a related pair]
 
-Installation
-  Pipe length [number, 160px, suffix "m", empty not "NA"]  [cols 1–3]
+Session
+  Auto sign-out after [number, 120px, suffix "min"]  [cols 1–3]
 ```
 
 Then a **Why table** — one line per decision:
 
 | Change | Why |
 |---|---|
-| Yes/No pairs → checklist | 7 decisions in one glance; 1 click each instead of 2; removes the zig-zag across columns [Hick][Efficiency] |
-| Scanner make under Scanner | child next to parent; was in the other column [Proximity] |
-| Pipe length 930px → 160px with "m" | width signals a short number; unit visible in the field [Match] |
-| Container 1880px → 880px | label→field eye travel cut; matches form max width in design.md [Fitts] |
+| 5 Yes/No pairs in two columns → one checklist | all choices in one glance; 1 click each instead of 2; no zig-zag across columns [Hick][Efficiency] |
+| Email frequency under Email | child next to its parent; was in the other column [Proximity] |
+| Auto sign-out 900px → 120px with "min" | width signals a short number; unit visible in the field [Match] |
+| From / To on one row | they're a pair; everything else stays one column [Proximity] |
+| Container 1800px → 800px | label→field eye travel cut; matches form max width in design.md [Fitts] |
 | Gaps 13/16/22px → 24 field / 48 section | on the 8-scale; groups now readable [Proximity][Consistency] |
 
 The blueprint is what the Fixed view in the demo must show, and what the code change implements.

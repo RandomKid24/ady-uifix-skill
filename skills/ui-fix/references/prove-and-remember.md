@@ -60,19 +60,19 @@ File: **`.ui-fix/memory.md`** in the project root (commit it). Read it **first**
 - <stable facts from Screen briefs: who uses the app, devices, language, domain terms>
 
 ## Decisions (follow these)
-- 2026-10-31: Labels spell out codes, code in brackets — "Tray material (MOC)". (approved)
-- 2026-10-31: Dependent fields hide when parent is No, nested under parent with left border. (approved)
+- YYYY-MM-DD: Labels spell out codes, code in brackets — "Purchase order no. (PO)". (approved)
+- YYYY-MM-DD: Dependent fields hide when parent is No, nested under parent with left border. (approved)
 
 ## Rejected (don't propose again unless asked)
-- 2026-10-31: Splitting Job form into a 5-step wizard — user prefers one page with section index.
+- YYYY-MM-DD: Splitting the invoice form into a 4-step wizard — user prefers one page with a section index.
 
 ## Glossary (one name per concept)
-- Job (not Order / Work order) · MOC = Material of Construction · FAT = Factory Acceptance Test
+- Customer (not Client / Account) · PO = Purchase order · SKU = Stock keeping unit
 
 ## Screens
 | Screen | File | Last run | Score before → after | Open items |
 |---|---|---|---|---|
-| New Job form | src/pages/jobs/JobForm.tsx | 2026-10-31 | 52 → 86 | section icons (proposed) |
+| New invoice | src/pages/invoices/InvoiceForm.tsx | YYYY-MM-DD | 52 → 86 | section icons (proposed) |
 ```
 
 Rules:

@@ -41,7 +41,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `scripts/hierarchy-scan.js` | Browser — heading vs label styles, spacing, confusing names, placeholders, fake values |
 | `scripts/dependency-scan.js` | Browser, dev only — flips choices to map dependent fields |
 | `scripts/focus-scan.js` | Browser — tab order vs visual order, focus visibility, keyboard-unreachable clickables |
-| `scripts/stress-text.js` | Browser — pseudo-localization, Devanagari, long values; reversible |
+| `scripts/stress-text.js` | Browser — pseudo-localization, other scripts (Devanagari, Arabic, CJK, Thai, Cyrillic), RTL, long values; reversible |
 | `scripts/token-scan.mjs` | Shell (Node) — hardcoded colors/sizes/inline styles |
 
 Browser scripts: run the file's contents with the browser's JS tool (or Playwright `page.evaluate`). Each has a `ROOT`/`TARGET`/`MODE` constant at the top to set first.
@@ -92,7 +92,7 @@ No browser or not runnable (native app) → say so in one line; work from code +
 
 From `references/walkthrough-and-stress.md`:
 - **Persona walkthroughs** on the primary task path — always **Newcomer** and **Keyboard-only** (run `focus-scan.js` first), plus whichever of Power user / Touch / Low vision (200% zoom) / Regional language / Interrupted match the brief. Include the 5-second test and first-click test. Log every friction point (hesitation, wrong click, dead end, backtrack, repeat work, surprise, lost work, can't tell state) and per persona: steps, clicks, friction count, completed?
-- **Stress tests**: breakpoints 320→1440, 200% zoom, `stress-text.js` (`expand`, `devanagari` if users read Indic scripts or the UI is translated, `long-values`; then `restore`), data volume 0/1/many (local data only), missing data, slow network, errors, dark mode if supported.
+- **Stress tests**: breakpoints 320→1440, 200% zoom, `stress-text.js` (`expand`; `script` with the users' script if they read a non-Latin one or the UI is translated; `rtl` if right-to-left is supported; `long-values`; then `restore`), data volume 0/1/many (local data only), missing data, slow network, errors, dark mode if supported.
 - **Consistency**: compare with 2–3 sibling screens doing the same job.
 
 ## Phase 4 — Measure
@@ -126,7 +126,7 @@ Review screenshots + code + walkthrough log + measurements. Only real problems. 
 - **Modals** — clear title, one primary action, Esc + close, focus trapped and returned, not a page in disguise.
 - **Navigation** — current location obvious, labels match page titles, works on mobile.
 - **Single components** — every state (default, hover, focus, active, disabled, loading, error), all sizes it's used at, matches the system component it duplicates.
-- **Staff / data-entry screens** — keyboard-only flow, shortcuts, no mouse-only steps, big targets for touch/shop floor, labels in the users' language where needed.
+- **Staff / data-entry screens** — keyboard-only flow, shortcuts, no mouse-only steps, big targets for touch, labels in the users' language where needed.
 - **Public / consumer** — value obvious in seconds, one CTA, trust signals near it, fast on mobile.
 
 **D. States** — loading, empty (with next step), error (with retry), disabled (with reason), success (what happened + what's next).
@@ -167,14 +167,14 @@ Blunt, short, evidence-first. Talk like a senior designer who respects the user'
 ## <target> — 48/100
 <Screen brief, 3–6 lines>
 
-Walkthrough: Newcomer 14 steps · 5 friction · completed ✓ | Keyboard ✗ stuck at Door access type
+Walkthrough: Newcomer 12 steps · 5 friction · completed ✓ | Keyboard ✗ stuck at Payment method
 
-🔴 [27] 1. Section titles look like labels — "Tray & Rack" 16px/500 vs labels 14px/500 (1.14×), 16px gap above vs 13px between fields. Newcomer couldn't tell where sections start. [Proximity] JobForm.tsx:212
-🔴 [18] 2. Tab jumps from Capacity to Save, skipping Model No. (focus-scan: backward jump 320px). [A11y] JobForm.tsx:88
-🟠 [18] 3. "Door access type" sits in the other column and greys out silently when Door Access is No. [Proximity][Visibility]
-🟡 [4]  4. #1a73e8 ×6 — design.md says --signal.
+🔴 [27] 1. Section titles look like labels — 16px/500 vs labels 14px/500 (1.14×), 16px gap above vs 13px between fields. Newcomer couldn't tell where sections start. [Proximity] CheckoutForm.tsx:212
+🔴 [18] 2. Tab jumps from Country to Pay, skipping Postal code (focus-scan: backward jump 320px). [A11y] CheckoutForm.tsx:88
+🟠 [18] 3. "Card number" sits in the other column and greys out silently until "Pay by card" is chosen. [Proximity][Visibility]
+🟡 [4]  4. #1a73e8 ×6 — design.md says --brand-primary.
 
-Root cause: 1 comes from components/form/Section.tsx — also affected: LeaveForm, VendorForm.
+Root cause: 1 comes from components/form/Section.tsx — also affected: SignupForm, AddressForm.
 Verdict: <one honest line>
 ```
 
