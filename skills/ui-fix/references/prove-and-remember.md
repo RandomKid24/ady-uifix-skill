@@ -110,7 +110,7 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 - [ ] Screen brief written
 - [ ] Screenshots before (desktop + mobile)
 - [ ] Persona walkthrough before (Newcomer + Keyboard at minimum)
-- [ ] Visual critique written; layout-scan run at desktop + 375px
+- [ ] Visual critique written; style-inventory and layout-scan run (layout at desktop + 375px)
 - [ ] All other scans run (or stated why not)
 - [ ] Stress tests run (or stated why not)
 - [ ] Issues ranked by Impact, each with evidence and principle tag
@@ -118,6 +118,7 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 - [ ] Every 🔴/🟠 fixed or blocker named — including layout (not just markers/renames)
 - [ ] Re-scanned, re-walked, re-scored after
 - [ ] Visual regression on all touched shared components
-- [ ] Demo built (Before / Fixed / Upgraded); Fixed view shows the new layout
+- [ ] Design suggestions: 2–3 directions with tokens, who they suit, recommendation
+- [ ] Demo built (Before / Fixed / Upgraded / Directions); Fixed view shows the new layout
 - [ ] Regression guard added or proposed
 - [ ] memory.md and design.md updated (with approval)

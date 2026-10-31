@@ -15,6 +15,7 @@ The user points at something: a page, a form, a table, a dashboard, a modal, one
 - **Understand before you judge.** Know what the screen is for, who uses it, and what it does to the data before calling anything wrong.
 - **Evidence over opinion.** Every finding has proof: a measured number, a scan result, a screenshot, a walkthrough step. Tag it with the principle it breaks.
 - **Effort is the enemy.** Remove work: derive, default, defer, delete.
+- **Have a design opinion.** Judge how it looks — typography, colour roles, surfaces, component styling, polish, how current it feels — and always come back with concrete visual design suggestions. "Follow the design system" means don't change the look *silently*, never "have no opinion about the look".
 - **Layout is the fix, not decoration.** Grid, alignment, balance, spacing rhythm, field widths and placement decide whether a screen feels right. A run that only adds `*`, aria attributes or renames while the layout is broken is a failed run.
 - **"Keep my look" = keep the design system**, never keep the problems. Fix with existing tokens and components.
 - **Fix the root.** Shared component first; then everything it touches is fixed too — and re-checked.
@@ -29,6 +30,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | File | When |
 |---|---|
 | `references/understand-the-screen.md` | Every run — Phase 1 |
+| `references/visual-design.md` | Every run — visual critique (type, colour roles, surfaces, shape, components, emphasis, polish), within-system polish, **Design suggestions** (2–3 directions) |
 | `references/layout-and-spacing.md` | Every run — visual critique, grid, alignment, balance, widths, spacing, placement, **Layout blueprint** |
 | `references/hierarchy-and-naming.md` | Every run — Phase 4–5 |
 | `references/walkthrough-and-stress.md` | Every run — Phase 3 (+ stress & consistency) |
@@ -37,6 +39,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/dependencies-and-navigation.md` | Dependent fields, or 4+ sections / long scroll |
 | `references/design-md-template.md` | When design.md is missing |
 | `scripts/axe-run.js` | Browser — accessibility (axe-core) + tap targets + overflow |
+| `scripts/style-inventory.js` | Browser — counts fonts, sizes, weights, text/background colours, radii, shadows, borders and button styles in use; near-duplicate sizes; low-contrast text |
 | `scripts/layout-scan.js` | Browser — container width, grid & near-miss alignment, row balance, dead zones, field width vs content, spacing scale & rhythm, ragged rows, row-by-row layout map |
 | `scripts/hierarchy-scan.js` | Browser — heading vs label styles, spacing, confusing names, placeholders, fake values |
 | `scripts/dependency-scan.js` | Browser, dev only — flips choices to map dependent fields |
@@ -99,6 +102,7 @@ From `references/walkthrough-and-stress.md`:
 
 Run what applies and keep the raw numbers for before → after:
 - **Visual critique first** (`layout-and-spacing.md` §1): study the screenshots and write 5–8 lines on grid, alignment lines, balance, rhythm, focal point, reading path, density, fit.
+- `style-inventory.js` — **always**. How many fonts, sizes, weights, colours, radii, shadows, borders and button styles the screen really uses; near-duplicate sizes; low-contrast text. Over the limits in `visual-design.md` §2 = visual noise.
 - `layout-scan.js` — **always**. Container width, columns, near-miss edges, unbalanced rows (one block full, other mostly empty), dead-zone choice groups, fields wider than their content, off-scale and inconsistent gaps, ragged rows, plus the row-by-row **Layout map**. Run at desktop and 375px.
 - `axe-run.js` — accessibility violations with real values (e.g. contrast 2.8:1 vs 4.5:1), small tap targets, horizontal overflow.
 - `hierarchy-scan.js` — section vs label size/weight ratio (flag < 1.25× without extra weight/colour/container), gap above sections vs between fields (needs ≥ 2×), label = section name, duplicate/similar/vague/abbreviated/truncated labels, generic placeholders, fake values ("NA"), choice groups with no visible selection.
@@ -137,6 +141,8 @@ Review screenshots + code + walkthrough log + measurements. Only real problems. 
 
 **G. Consistency** — same job, same pattern, same names as sibling screens and the Glossary.
 
+**V. Visual design** (`visual-design.md`) — typography (family, scale, weights, line-height), colour roles (one accent for primary/active, semantic colours only for meaning, text greys by importance), surfaces & depth, one radius scale, component styling (button variants, equal control heights, choices that look like choices), visual weight (does the primary action stand out?), icon consistency, density, polish (states, transitions, pixel alignment), how current and trustworthy it looks. Meaning-hiding problems → 🔴/🟠; pure aesthetics → 🟡 and into Design suggestions.
+
 **A. Design-system adherence** — tokens, type scale, spacing, components, deprecated patterns.
 
 For every issue: severity (🔴 blocks / loses data · 🟠 confuses / slows · 🟡 off-system / polish), **Impact = Severity × Frequency × Reach** (1–27, see `prove-and-remember.md`), a principle tag (e.g. [Proximity], [Match], [Hick], [Fitts], [Prevention], [A11y]), evidence, and file:line.
@@ -154,7 +160,7 @@ Each category starts at max; subtract per issue (🔴 −8, 🟠 −4, 🟡 −2
 | Usability for this kind of UI (C) | 15 |
 | States & feedback (D) | 10 |
 | Accessibility & keyboard (E) | 15 |
-| Design-system & consistency (A + G) | 10 |
+| Visual design, system & consistency (V + A + G) | 10 |
 | Responsive & stress (F) | 10 |
 
 Always show the score with the per-category breakdown, before and after, in every run.
@@ -182,13 +188,19 @@ Then the **Layout map** (before) and, whenever any layout issue exists, the **La
 
 Then the tables that apply: Hierarchy · Rename · Dependency map · Effort · Stress · Consistency · Walkthrough friction log (top items).
 
-`quick` stops here. `handoff` outputs the hand-off prompt and stops.
+Then **Design suggestions — always, in every mode** (format in `visual-design.md` §3): 2–3 concrete visual directions that keep the product recognisable (e.g. *Clean & calm*, *Compact pro*, *Guided*), each with the exact tokens/components that change, what stays, who it suits (from the Screen brief), the expected effect, and which one you recommend and why.
+
+`quick` stops here (Design suggestions included). `handoff` outputs the hand-off prompt (with the recommended direction as an optional section) and stops.
 
 ## Phase 7 — Fix
 
 **Required fixes — always:** every 🔴 and 🟠, using existing tokens/components even if the user said "keep my look". **This includes layout**: implement the Layout blueprint — regrouping, reordering, re-gridding, resizing fields, fixing spacing, moving children under parents. These are fixes, not upgrades. Only a real blocker (backend/API change, product decision, missing data) excuses one — name it per issue.
 
 **Minimal-change trap:** before finishing, look at your change list. If it's mostly markers (`*`, aria, ids), copy tweaks and colours while layout-scan or the visual critique found 🟠/🔴 layout problems, you are not done — go back and implement the blueprint.
+
+**Within-system visual polish — always** (`visual-design.md` §4): collapse near-duplicate sizes/colours/radii/shadows to tokens, give the primary action the primary style and quiet the competition, equal control heights per row, consistent padding, designed hover/focus/active/disabled states, one surface approach per level.
+
+**Design directions — show, then ask:** build each suggested direction as a view in the demo; implement only the one the user picks, then write its tokens/components into design.md with a Changelog line.
 
 **Recommended upgrades — show, then ask:** workflow changes beyond layout — sections → multi-step wizard, derive/default, presets, copy-from-previous, feature checklists, section index. Build them as an **Upgraded** view in the demo with their score/effort gain. Apply only on a yes (unless the user asked for a redesign). Check memory's Rejected list first.
 
@@ -207,7 +219,7 @@ How:
 From `references/prove-and-remember.md`:
 1. **Prove:** re-run every scan, re-walk the personas, re-screenshot (`after-*.png`), re-score. **Visual regression** on every screen using a shared component you changed (`npx -y pixelmatch before.png after.png diff.png 0.1`, or side-by-side by eye) — unexpected diffs get fixed before reporting. Same save payload, business validation intact, existing tests pass (run them if quick). Anything fails → fix and re-prove.
 2. **Demo** — one self-contained HTML file in the run folder (published as an artifact or inline preview if the environment allows):
-   - **Before / Fixed / Upgraded** views (stacked on mobile), each with score badge and per-category bars.
+   - **Before / Fixed / Upgraded / Direction A·B·C** views (tabs; stacked on mobile), each with score badge and per-category bars. Directions are full visual renders of the screen in that style, using realistic content — the user should be able to pick one by looking.
    - Real screenshots embedded (data URIs) with desktop/mobile toggle.
    - The **Fixed view implements the Layout blueprint** — the user must see the new structure, not the old layout with markers.
    - A **live, interactive Fixed view** built with the real design.md tokens as CSS variables: hover/focus, primary button loading → success, empty submit → inline errors + error summary, dependent fields revealing under their parent, section index highlighting and jumping, searchable selects filtering.
@@ -243,5 +255,6 @@ Check the **Definition of done** in `prove-and-remember.md`, then end with:
 - Don't inflate the after-score.
 - Don't re-propose what memory says was rejected.
 - Don't run against production, submit real data, or click destructive actions.
-- Don't invent a new visual style, add new libraries, or touch unrelated logic.
+- Don't change the visual style silently — propose it as a direction. But never skip Design suggestions.
+- Don't add new libraries or touch unrelated logic.
 - Don't explain UX theory. Show what's wrong, prove it, fix it, prove the fix.
