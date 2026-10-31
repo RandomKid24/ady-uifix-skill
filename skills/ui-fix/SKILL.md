@@ -15,6 +15,7 @@ The user points at something: a page, a form, a table, a dashboard, a modal, one
 - **Understand before you judge.** Know what the screen is for, who uses it, and what it does to the data.
 - **Evidence over opinion.** Every finding has proof: a measured number, a screenshot, a walkthrough step.
 - **Effort is the enemy.** Remove work: derive, default, defer, delete.
+- **Every product looks like itself.** There is no default look. Start from the product's identity — brand, personality, domain, users, context — and never converge on the generic SaaS template (light grey page, white cards, tiny uppercase labels, one blue button, pills, pastel gradient). Directions must differ from each other and from other projects.
 - **Have a design opinion.** Judge how it looks and always come back with concrete visual suggestions. "Follow the design system" means don't change the look *silently* — never "have no opinion".
 - **Layout is the fix, not decoration.** Grid, alignment, balance, spacing, widths and placement decide whether a screen feels right.
 - **Visible beats invisible.** Behind-the-scenes fixes (labels linked to fields, screen-reader names, contrast tweaks) are good — but when the user asked to make it *better*, they must also see a difference.
@@ -97,8 +98,9 @@ Then:
 2. Find **design.md** (root, `docs/`, `.design/`, `design/`, `src/`, `frontend/`, `client/`, `*design-system*.md`, `*style-guide*.md`). Read it fully. Missing → say so, infer from the code (Tailwind config / CSS variables / theme / most-used components), list what you inferred, offer to generate one from `references/design-md-template.md`.
    - design.md vs code → design.md wins; flag it.
    - **design.md vs a measurable accessibility rule** (e.g. placeholder contrast) → report the conflict, apply a scoped opt-in fix, propose the rule change. Never override silently (`harness-and-safety.md` §4).
-3. Note the stack, component library, icon set, test/lint setup, and whether the screen differs by **role or variant**.
-4. Run folder: `.ui-fix/runs/<YYYY-MM-DD>-<target-slug>/`.
+3. **Product identity** (`visual-design.md` §0): personality (3 adjectives), context of use, brand anchors (logo, colours, typeface, mascot/illustration), domain cues, and distinctive things to keep — from design.md, brand assets in the repo, memory, the existing UI, the Screen brief. Still unclear and it matters (Polish/Redesign) → fold it into the one intake question: "three words for how it should feel?". Read the stored **look signature** from memory if there is one.
+4. Note the stack, component library, icon set, test/lint setup, and whether the screen differs by **role or variant**.
+5. Run folder: `.ui-fix/runs/<YYYY-MM-DD>-<target-slug>/`.
 
 ## Phase 1 — Understand the screen
 
@@ -119,7 +121,7 @@ From `references/walkthrough-and-stress.md`: persona walkthroughs (always Newcom
 ## Phase 4 — Measure
 
 Keep the raw numbers for before → after:
-- **Visual critique** (`layout-and-spacing.md` §1 + `visual-design.md` §1): 5–8 lines on grid, alignment, balance, rhythm, focal point, reading path, density, fit, type, colour, surfaces.
+- **Visual critique** (`layout-and-spacing.md` §1 + `visual-design.md` §1): 5–8 lines on grid, alignment, balance, rhythm, focal point, reading path, density, fit, type, colour, surfaces — and **identity**: could you tell which product this is with the logo covered?
 - `style-inventory.js` — always.
 - `layout-scan.js` — always, desktop and 375px.
 - `text-density.js` — always. Dashboards/overviews: aim ≤ 250 words per screen, explanations in tooltips.
@@ -183,7 +185,7 @@ Plain language, short. **Order matters:**
 2. …
 
 ## Options to go further
-<Design suggestions: 2–3 directions with what changes, who it suits, which you recommend. For Redesign: which one was applied.>
+<Design suggestions (`visual-design.md` §3): 2–3 directions built from the product's identity, each a different position on the axes (type, colour strategy, surfaces, shape, density, layout — ≥3 axes differ), with what changes, what stays, who it suits, and which you recommend. Rendered as screenshots. For Redesign: which one was applied.>
 
 ## Not tested
 - <what you couldn't check and why — e.g. real login, other roles, Safari, production data>
@@ -208,8 +210,8 @@ Plain language, short. **Order matters:**
 
 By level:
 - **Fix** — every 🔴 and 🟠, including layout (implement the Layout blueprint: regroup, reorder, re-grid, resize, respace, move children under parents). Only a real blocker excuses one — name it.
-- **Polish** — Fix + within-system visual polish (`visual-design.md` §4).
-- **Redesign** — Polish + build 2–3 directions, **render each as a screenshot on the real page** (apply as a temporary stylesheet/variant in the harness or dev server), apply the recommended one (or the user's pick), say how to undo. Write the chosen direction's tokens into design.md on approval.
+- **Polish** — Fix + within-system visual polish (`visual-design.md` §4) that **sharpens** the product's identity, never sands it down to neutral.
+- **Redesign** — Polish + build 2–3 identity-driven, genuinely different directions (pass the **anti-template check**, `visual-design.md` §5), **render each as a screenshot on the real page** (apply as a temporary stylesheet/variant in the harness or dev server), apply the recommended one (or the user's pick), say how to undo. Write the chosen direction's tokens into design.md on approval.
 
 Always:
 - **Minimal-change trap:** if your change list is mostly markers, renames and colours while layout or text problems were found, you're not done.
@@ -227,7 +229,7 @@ From `references/prove-and-remember.md`:
 2. **Demo** — one self-contained HTML file: Before / After (and Upgraded / Directions) as tabs, real screenshots with desktop/mobile toggle, live interactive After with real tokens, numbered callouts, a proof panel. Published as an artifact or inline preview if the environment allows.
 3. **Lock in:** a focused test if the project has a test setup; propose a lint rule if it has a linter.
 4. **design.md:** generate if missing (with approval); propose rules for gaps; append on approval with a Changelog line.
-5. **Memory:** decisions, rejections, superseded decisions, glossary, harness location, screen log row (score + **rubric version**, open items).
+5. **Memory:** decisions, rejections, superseded decisions, glossary, **look signature** of any applied direction, harness location, screen log row (score + **rubric version**, open items).
 
 ## Phase 9 — Wrap up
 
@@ -251,4 +253,6 @@ Check the Definition of done (`prove-and-remember.md`), then deliver the Phase 6
 - Don't reintroduce removed widgets, or re-propose rejected ideas.
 - Don't leave a 🔴/🟠 unfixed without naming the blocker.
 - Don't run against production, submit real data, or click destructive actions.
+- Don't fall back to a default look. No two products should come out looking the same — run the anti-template check.
+- Don't flatten a product's distinctive features (mascot, signature colour, characterful type) into neutral.
 - Don't add new libraries or touch unrelated logic.

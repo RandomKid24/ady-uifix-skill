@@ -61,6 +61,7 @@ File: **`.ui-fix/memory.md`** in the project root (commit it). Read it **first**
 
 ## Decisions (follow these)
 - YYYY-MM-DD: Labels spell out codes, code in brackets — "Purchase order no. (PO)". (approved)
+- YYYY-MM-DD: look: personality calm·precise·trustworthy · type humanist sans + tabular numbers · colour warm neutrals + deep green accent · surfaces flat with dividers · shape soft 4px · density compact · layout sidebar + list-first (approved)
 - YYYY-MM-DD: Dependent fields hide when parent is No, nested under parent with left border. (approved)
 
 ## Superseded (an explicit redesign replaced these)
@@ -130,7 +131,8 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 - [ ] Re-scanned, re-walked, re-scored with the same rubric version — every role/variant
 - [ ] Visual regression on everything a shared change touches
 - [ ] Something visible changed if the user asked to make it better — or it's stated plainly that it's subtle, with a bigger option
-- [ ] Design suggestions: 2–3 directions; for Redesign, rendered on the real page and one applied with undo
+- [ ] Product identity written (personality, context, brand anchors, keep)
+- [ ] Design suggestions: 2–3 identity-driven directions differing on ≥3 axes, anti-template check passed; for Redesign, rendered on the real page and one applied with undo
 - [ ] Report order: What you'll see → How to see it → What was wrong → Options → Not tested → Score (rubric v3) → Details → Files
 - [ ] Plain language in the main report; jargon only in Details
 - [ ] Regression guard added or proposed
