@@ -166,17 +166,51 @@ Says *"I don't see changes"*? It checks, in order: files changed → server serv
 
 ## Design library
 
-So it doesn't design every product the same way, the skill carries a library a senior designer would have in their head:
+So it doesn't design every product the same way, the skill carries a library a senior designer would have in their head. It picks from it by **your product's identity**, and its 2–3 directions always use different styles or blends.
 
-| Library | What's in it |
+### 12 visual styles
+
+The same screen in each style. Every style comes with fonts, colours, surfaces, shape, density, signature details, when to use and avoid it — and the skill blends two when it fits (e.g. *Dense pro × Warm hospitality* for a POS).
+
+| | |
 |---|---|
-| **12 visual styles** | Editorial · Swiss functional · Soft & friendly · Dense pro · Dark command center · Industrial · Warm hospitality · Clinical calm · Neo-brutalist · Premium minimal · Playful · Corporate trust — each with fonts, colours, surfaces, shape, density, signature details, when to use and avoid, and how to blend two |
-| **Layout patterns** | 8 dashboard layouts, navigation, lists (table, cards, kanban, timeline, calendar…), detail pages, 7 form patterns, settings, onboarding, empty states, feedback, search, mobile |
-| **Component variants** | 7 ways to show a metric, buttons, inputs, choice controls by option count, tables, status, progress, people, charts by question, overlays, motion |
-| **Domain playbooks** | HR, ERP/manufacturing, POS/restaurant, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring/IoT, real estate, internal tools, marketing sites |
-| **Type & colour** | Font pairings by personality, type scales, building a full palette from your brand colour, colour strategies, dark mode, colour-blind-safe chart colours |
+| <img src="docs/images/style-editorial.png" width="400" alt="Editorial style"> | <img src="docs/images/style-swiss.png" width="400" alt="Swiss functional style"> |
+| **Editorial** — Reports, knowledge bases, premium B2B | **Swiss functional** — Admin consoles, analytics |
+| <img src="docs/images/style-soft.png" width="400" alt="Soft & friendly style"> | <img src="docs/images/style-dense-pro.png" width="400" alt="Dense pro style"> |
+| **Soft & friendly** — Consumer, education, onboarding | **Dense pro** — ERP, accounting, ops — all-day use |
+| <img src="docs/images/style-dark-command.png" width="400" alt="Dark command center style"> | <img src="docs/images/style-industrial.png" width="400" alt="Industrial style"> |
+| **Dark command center** — Monitoring, IoT, energy, control rooms | **Industrial** — Factory floor, warehouse, field tablets |
+| <img src="docs/images/style-warm-hospitality.png" width="400" alt="Warm hospitality style"> | <img src="docs/images/style-clinical.png" width="400" alt="Clinical calm style"> |
+| **Warm hospitality** — Restaurants, salons, hotels, booking | **Clinical calm** — Healthcare, pharma, labs, compliance |
+| <img src="docs/images/style-neo-brutalist.png" width="400" alt="Neo-brutalist style"> | <img src="docs/images/style-premium-minimal.png" width="400" alt="Premium minimal style"> |
+| **Neo-brutalist** — Startups, creative tools, youth brands | **Premium minimal** — Wealth, real estate, luxury |
+| <img src="docs/images/style-playful.png" width="400" alt="Playful style"> | <img src="docs/images/style-corporate-trust.png" width="400" alt="Corporate trust style"> |
+| **Playful** — Engagement, learning, products with a mascot | **Corporate trust** — Banking, insurance, enterprise, government |
 
-It picks from this by your product's identity, and its 2–3 directions always use different styles or blends.
+### Layout patterns
+
+Different directions can use different **layouts**, not just different colours.
+
+<img src="docs/images/patterns-dashboards.png" alt="Dashboard and home layouts">
+
+<img src="docs/images/patterns-lists.png" alt="List and collection layouts">
+
+Plus navigation (sidebar, top nav, bottom tabs, command palette, tabs, breadcrumbs, stepper), detail pages, 7 form patterns, settings, onboarding, empty states, feedback, search and mobile patterns.
+
+### Component variants
+
+The right variant for the content — e.g. the control depends on how many options there are.
+
+<img src="docs/images/components.png" alt="Component variants">
+
+**Building with React + Tailwind?** [befui](https://befui.vercel.app) has copy-paste components on Radix + Tailwind, including HRMS and marketing blocks, with a CLI and an MCP server. ui-fix uses your project's existing components first; where a React + Tailwind project has nothing for the job, it suggests befui (and asks before adding anything).
+
+### Domain playbooks & type/colour
+
+- **Domains** — what good looks like for HR, ERP/manufacturing, POS/restaurant, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring/IoT, real estate, internal tools and marketing sites.
+- **Type & colour** — 13 font pairings by personality, type scales, a full palette built from your brand colour (OKLCH), 8 colour strategies, dark mode, colour-blind-safe chart colours.
+
+<sub>Preview images are generated by `docs/build-previews.py` — re-run it after changing the library.</sub>
 
 ## Project files it creates
 
