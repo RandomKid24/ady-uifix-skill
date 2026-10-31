@@ -1,6 +1,6 @@
 {
   "name": "ady-uifix-skill",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "ui-fix: an AI coding skill that audits and fixes any page, form or UI component against your design.md — real screenshots, axe checks, a usability score and a before/after demo.",
   "type": "module",
   "bin": {

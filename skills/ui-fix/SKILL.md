@@ -24,6 +24,7 @@ The bar for every fix: **a first-time user with zero context knows what this scr
 - **Never present a weak run as a clean bill of health.** If the screen still has problems after your fix, say so plainly, with the score.
 
 Bundled files (paths relative to this SKILL.md):
+- `references/understand-the-screen.md` — **read this on every run**: purpose, users, data in/out, flow, element inventory, primary task path, Screen brief
 - `references/forms-and-data-entry.md` — **read this for any form, wizard, settings page, or data-entry screen** (input choice, dropdowns, effort table, flow, validation)
 - `scripts/token-scan.mjs` — finds hardcoded colors/sizes/inline styles (design-token drift)
 - `scripts/axe-run.js` — paste into the browser to run axe-core accessibility checks
@@ -55,12 +56,24 @@ If the user says yes (or in `sweep` mode), **generate design.md** from `referenc
 
 If design.md contradicts the code, design.md wins — flag the contradiction.
 
-## Step 2 — Pin down the target and its users
+## Step 2 — Understand the screen (before judging anything)
 
-- Find and read the actual source, plus child components, shared styles, and any form schema/validation.
+Read `references/understand-the-screen.md` and do all of it. You can't fix a screen you don't understand.
+
+- Find and read the actual source, plus child components, shared styles, form schema/validation, **the API/endpoint it calls, the backend handler and the model/table it writes**.
 - Classify the target: page / form / table-or-list / dashboard / modal / navigation / single component / mobile screen. Step 4 checks depend on this.
-- Work out **who uses it**: from design.md, the README, or the screen itself (admin panel, public landing page, kiosk, staff data-entry screen, consumer app). If it really changes the fix and you can't tell, ask one short question. Otherwise assume and state the assumption.
+- Work out:
+  - **Purpose** — one sentence: "<who> uses this to <do what> so that <outcome>", and the job type (Create / Edit / Review / Look up / Monitor / Configure / Bulk / Read / Convert). The job type decides what "good" means.
+  - **Users** — roles, how often they use it, device/setting, domain knowledge, language.
+  - **What it does** — data in, data out, business rules, side effects, field dependencies.
+  - **Flow** — where users come from, where they go after, related screens.
+  - **Element inventory** — every element with its purpose, data, required, frequency. Flag elements with no clear purpose, unclear labels, wrong prominence, duplicates.
+  - **Primary task path** — the shortest real path to finish the main job, with step and click count.
+  - **UI ↔ backend mismatches** — required on server but not marked, collected but ignored, backend-only validation, hardcoded options that should be master data. Report these as issues.
+- Output the **Screen brief** (format in the reference) before the audit. If something in it is a guess that would change the fix, ask one short question; otherwise state the assumption and keep going.
 - If it's ambiguous which file, ask one short question. Otherwise start.
+
+Every finding later must tie back to the brief: why it hurts **this** user doing **this** job.
 
 ## Step 3 — See it for real
 
@@ -153,8 +166,11 @@ For forms and data-entry screens, also show the **Effort table** (fields, requir
 
 Talk like a straight-talking senior designer. Direct, some attitude is fine, no fluff. Each issue = what's wrong + why it hurts the user + where (file:line) + evidence (axe rule, measured value, or screenshot).
 
+Start with the Screen brief (from Step 2), then the issues:
+
 ```
 ## <target> — score 48/100
+Purpose: Sales coordinators create a manufacturing job for a confirmed order. Daily use, desktop.
 
 🔴 1. Primary action is invisible — "Save" is a grey ghost button next to a bright red "Delete". Users will hit the wrong one. (EmployeeForm.tsx:142)
 🔴 2. Placeholders used as labels — type one character and the field name is gone. axe: label ×6.
@@ -225,6 +241,7 @@ End with:
 
 ## Don'ts
 - Don't skip the design.md check, ever.
+- Don't judge a screen before you know what it's for and what it does — Screen brief first.
 - Don't invent a new visual style — follow the system.
 - Don't give a fix without a demo.
 - Don't inflate the after-score.
