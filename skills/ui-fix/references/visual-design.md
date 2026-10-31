@@ -60,7 +60,14 @@ These are limits on noise, not a style. Map extras to the design.md token they s
 
 Every run (including `quick`) includes **Design suggestions**: **2–3 directions**. Each one keeps the brand anchors and the product recognisable — and the directions must be **genuinely different from each other**, not three shades of the same template.
 
-**Build each direction by choosing a position on these axes** (and say which). At least **3 axes must differ** between any two directions:
+**Draw on the design library** — that's where the range comes from:
+- `library/styles.md` — pick a style or a blend per direction (shortlist by identity, drop by "avoid when", never the same style twice in one set).
+- `library/patterns.md` — directions can differ in **layout pattern**, not just colour (e.g. KPI strip vs My day vs Split list-detail).
+- `library/components.md` — choose component variants that fit the style and content.
+- `library/type-and-colour.md` — font pairing by personality; build the palette from the brand colour; pick a colour strategy.
+- `library/domains.md` — check each direction against what good looks like in this domain.
+
+Then place each direction on these axes (and say which). At least **3 axes must differ** between any two directions:
 
 | Axis | Options (examples, not a menu to always pick from) |
 |---|---|
@@ -79,6 +86,7 @@ Every run (including `quick`) includes **Design suggestions**: **2–3 direction
 ### Design suggestions — <product>, personality: <3 adjectives>
 
 A. <name that describes the idea, not a generic label>
+   Style: <library style or blend, e.g. "Dense pro × Warm hospitality"> · Pattern: <library pattern>
    Axes: type <…> · colour <…> · surfaces <…> · shape <…> · density <…> · layout <…>
    Changes: <exact tokens/components that change — from design.md where possible>
    Keeps: <brand anchors kept>

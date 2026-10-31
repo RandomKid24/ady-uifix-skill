@@ -132,7 +132,7 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 - [ ] Visual regression on everything a shared change touches
 - [ ] Something visible changed if the user asked to make it better — or it's stated plainly that it's subtle, with a bigger option
 - [ ] Product identity written (personality, context, brand anchors, keep)
-- [ ] Design suggestions: 2–3 identity-driven directions differing on ≥3 axes, anti-template check passed; for Redesign, rendered on the real page and one applied with undo
+- [ ] Design suggestions: 2–3 identity-driven directions from the design library (different styles/blends, patterns where useful), differing on ≥3 axes, anti-template check passed; for Redesign, rendered on the real page and one applied with undo
 - [ ] Report order: What you'll see → How to see it → What was wrong → Options → Not tested → Score (rubric v3) → Details → Files
 - [ ] Plain language in the main report; jargon only in Details
 - [ ] Regression guard added or proposed

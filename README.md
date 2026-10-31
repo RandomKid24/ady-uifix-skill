@@ -164,6 +164,20 @@ Pages behind login or an API: it builds a reusable **test harness** (Playwright 
 
 Says *"I don't see changes"*? It checks, in order: files changed → server serving them → right URL/role → hard refresh → only local → or just subtle (and offers a bigger option).
 
+## Design library
+
+So it doesn't design every product the same way, the skill carries a library a senior designer would have in their head:
+
+| Library | What's in it |
+|---|---|
+| **12 visual styles** | Editorial · Swiss functional · Soft & friendly · Dense pro · Dark command center · Industrial · Warm hospitality · Clinical calm · Neo-brutalist · Premium minimal · Playful · Corporate trust — each with fonts, colours, surfaces, shape, density, signature details, when to use and avoid, and how to blend two |
+| **Layout patterns** | 8 dashboard layouts, navigation, lists (table, cards, kanban, timeline, calendar…), detail pages, 7 form patterns, settings, onboarding, empty states, feedback, search, mobile |
+| **Component variants** | 7 ways to show a metric, buttons, inputs, choice controls by option count, tables, status, progress, people, charts by question, overlays, motion |
+| **Domain playbooks** | HR, ERP/manufacturing, POS/restaurant, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring/IoT, real estate, internal tools, marketing sites |
+| **Type & colour** | Font pairings by personality, type scales, building a full palette from your brand colour, colour strategies, dark mode, colour-blind-safe chart colours |
+
+It picks from this by your product's identity, and its 2–3 directions always use different styles or blends.
+
 ## Project files it creates
 
 ```
@@ -201,7 +215,13 @@ skills/ui-fix/
 │   ├── dependencies-and-navigation.md    # parent→child fields, section index, numbering, icons
 │   ├── forms-and-data-entry.md           # effort, controls, dropdowns, validation
 │   ├── prove-and-remember.md             # impact ranking, proof, regression guard, memory, hand-off
-│   └── design-md-template.md             # starter design.md
+│   ├── design-md-template.md             # starter design.md
+│   └── library/
+│       ├── styles.md                     # 12 complete visual styles + blending
+│       ├── patterns.md                   # layouts per screen type
+│       ├── components.md                 # component variants
+│       ├── domains.md                    # what good looks like per domain
+│       └── type-and-colour.md            # font pairings, palettes, dark mode, chart colours
 └── scripts/
     ├── text-density.js                   # words per section/screen, tiny text, repeated numbers (browser)
     ├── clip-scan.js                      # text hidden by fixed heights / overflow / ellipsis (browser)

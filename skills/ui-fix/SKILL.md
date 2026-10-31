@@ -49,6 +49,11 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/forms-and-data-entry.md` | Forms, wizards, settings, data entry |
 | `references/dependencies-and-navigation.md` | Dependent fields, or 4+ sections / long scroll |
 | `references/design-md-template.md` | When design.md is missing |
+| `references/library/styles.md` | **Design library** — 12 complete visual styles (Editorial, Swiss functional, Soft & friendly, Dense pro, Dark command center, Industrial, Warm hospitality, Clinical calm, Neo-brutalist, Premium minimal, Playful, Corporate trust) with type, colour, surfaces, shape, density, signature details, when to use/avoid, and blending |
+| `references/library/patterns.md` | Layout patterns per screen type — dashboards, navigation, lists, detail pages, forms, settings, onboarding, empty states, feedback, search, mobile |
+| `references/library/components.md` | Variants for metrics, buttons, inputs, choices, tables, status, progress, timelines, people, charts, dates, overlays, toasts, empty states, motion |
+| `references/library/domains.md` | What good looks like per domain — HR, ERP, POS, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring, real estate, internal tools, marketing sites |
+| `references/library/type-and-colour.md` | Font pairings by personality, type scales, building a palette from a brand colour (OKLCH), colour strategies, dark mode, chart colours |
 | `scripts/style-inventory.js` | Browser — fonts, sizes, colours, radii, shadows, button styles in use; contrast |
 | `scripts/layout-scan.js` | Browser — container width, grid, alignment, row balance, dead zones, widths, spacing, layout map |
 | `scripts/text-density.js` | Browser — words per section/screen, tiny text, explanation lines, repeated numbers |
@@ -98,7 +103,7 @@ Then:
 2. Find **design.md** (root, `docs/`, `.design/`, `design/`, `src/`, `frontend/`, `client/`, `*design-system*.md`, `*style-guide*.md`). Read it fully. Missing → say so, infer from the code (Tailwind config / CSS variables / theme / most-used components), list what you inferred, offer to generate one from `references/design-md-template.md`.
    - design.md vs code → design.md wins; flag it.
    - **design.md vs a measurable accessibility rule** (e.g. placeholder contrast) → report the conflict, apply a scoped opt-in fix, propose the rule change. Never override silently (`harness-and-safety.md` §4).
-3. **Product identity** (`visual-design.md` §0): personality (3 adjectives), context of use, brand anchors (logo, colours, typeface, mascot/illustration), domain cues, and distinctive things to keep — from design.md, brand assets in the repo, memory, the existing UI, the Screen brief. Still unclear and it matters (Polish/Redesign) → fold it into the one intake question: "three words for how it should feel?". Read the stored **look signature** from memory if there is one.
+3. **Product identity** (`visual-design.md` §0, plus the matching playbook in `library/domains.md`): personality (3 adjectives), context of use, brand anchors (logo, colours, typeface, mascot/illustration), domain cues, and distinctive things to keep — from design.md, brand assets in the repo, memory, the existing UI, the Screen brief. Still unclear and it matters (Polish/Redesign) → fold it into the one intake question: "three words for how it should feel?". Read the stored **look signature** from memory if there is one.
 4. Note the stack, component library, icon set, test/lint setup, and whether the screen differs by **role or variant**.
 5. Run folder: `.ui-fix/runs/<YYYY-MM-DD>-<target-slug>/`.
 
@@ -139,7 +144,7 @@ Only real problems. Categories:
 - **H. Hierarchy & naming** (`hierarchy-and-naming.md`) — section titles vs labels, confusing/vague/abbreviated names, placeholders, fake values, choices that look like choices.
 - **I. Dependencies & way-finding** (`dependencies-and-navigation.md`) — child under its parent, hide or explain disabled, numbered sections, section index.
 - **B. Zero-context clarity** — what is this screen, one obvious primary action, labels that say what happens, a way out, feedback for every action.
-- **C. By target type** — forms (`forms-and-data-entry.md`); **dashboards** (`dashboards-and-content.md`: one headline sentence, 3 signals, no duplicated metrics, details on demand, a reason for every chart vs table); tables; modals; navigation; single components; staff/data-entry screens; public pages.
+- **C. By target type** — compare against the domain playbook (`library/domains.md`) and the best-fitting pattern (`library/patterns.md`) — is this the right layout pattern for the job at all? Then: forms (`forms-and-data-entry.md`); **dashboards** (`dashboards-and-content.md`: one headline sentence, 3 signals, no duplicated metrics, details on demand, a reason for every chart vs table); tables; modals; navigation; single components; staff/data-entry screens; public pages.
 - **T. Text & content** (`dashboards-and-content.md` §2–3) — too many words, tiny text, too many explanation lines, repeated numbers, **clipped/hidden content**.
 - **D. States** — loading, empty, error, disabled with reason, success.
 - **E. Accessibility** — contrast, focus, keyboard, names on icon buttons, colour never the only signal.
@@ -211,7 +216,7 @@ Plain language, short. **Order matters:**
 By level:
 - **Fix** — every 🔴 and 🟠, including layout (implement the Layout blueprint: regroup, reorder, re-grid, resize, respace, move children under parents). Only a real blocker excuses one — name it.
 - **Polish** — Fix + within-system visual polish (`visual-design.md` §4) that **sharpens** the product's identity, never sands it down to neutral.
-- **Redesign** — Polish + build 2–3 identity-driven, genuinely different directions (pass the **anti-template check**, `visual-design.md` §5), **render each as a screenshot on the real page** (apply as a temporary stylesheet/variant in the harness or dev server), apply the recommended one (or the user's pick), say how to undo. Write the chosen direction's tokens into design.md on approval.
+- **Redesign** — Polish + build 2–3 identity-driven, genuinely different directions **from the design library**: each picks a style or blend (`library/styles.md`), a layout pattern (`library/patterns.md`), component variants (`library/components.md`) and type/colour from `library/type-and-colour.md` (brand colour → palette in OKLCH), (pass the **anti-template check**, `visual-design.md` §5), **render each as a screenshot on the real page** (apply as a temporary stylesheet/variant in the harness or dev server), apply the recommended one (or the user's pick), say how to undo. Write the chosen direction's tokens into design.md on approval.
 
 Always:
 - **Minimal-change trap:** if your change list is mostly markers, renames and colours while layout or text problems were found, you're not done.
