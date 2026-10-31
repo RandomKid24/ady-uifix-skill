@@ -15,7 +15,16 @@ The user points at something that looks or works wrong. It can be anything: a fu
 
 The bar for every fix: **a first-time user with zero context knows what this screen is, what to click, and what happens next — without thinking.** If someone could hesitate, misclick, or get stuck, it's not fixed.
 
+## Mindset — think like the best UI engineer on the team
+
+- **Not broken ≠ good.** A screen that works but makes people think, scroll, guess or click twice is a screen to fix. Judge by how fast and confidently a new user gets the job done, not by whether anything throws an error.
+- **Effort is the enemy.** Every field, click, decision and tab costs the user. Your best fixes remove work: derive it, default it, defer it, or delete it.
+- **"Keep my look" means keep the design system** — colors, fonts, spacing, components, layout style. It never means keep usability problems. Fix 🔴 and 🟠 issues using the existing tokens and components.
+- **Be opinionated, then let the user choose.** Fix what's required; propose the bigger upgrades clearly, show them in the demo, and let the user say yes or no.
+- **Never present a weak run as a clean bill of health.** If the screen still has problems after your fix, say so plainly, with the score.
+
 Bundled files (paths relative to this SKILL.md):
+- `references/forms-and-data-entry.md` — **read this for any form, wizard, settings page, or data-entry screen** (input choice, dropdowns, effort table, flow, validation)
 - `scripts/token-scan.mjs` — finds hardcoded colors/sizes/inline styles (design-token drift)
 - `scripts/axe-run.js` — paste into the browser to run axe-core accessibility checks
 - `references/design-md-template.md` — template for generating a missing design.md
@@ -95,7 +104,7 @@ Use the screenshots plus the code. Only report real problems.
 - Every action gives visible feedback.
 
 **C. Checks by target type** — run only what applies:
-- **Forms:** visible labels (placeholder is not a label); required/optional marked; correct input types; logical order and grouping; long forms split into sections or steps; helper text for formats/units; inline plain-language validation that says how to fix it; submit shows loading and blocks double-submit; errors keep entered data; sensible defaults; autofocus on the first field; Tab order matches visual order; Enter submits where expected.
+- **Forms & data entry:** read `references/forms-and-data-entry.md` and apply all of it. At minimum: measure the Effort table; check every field can't be derived/defaulted/deferred; right control type per field (radio/segmented for 2–4 options, searchable select for 10+, units as suffix, etc.); dropdown option order, readable labels (no bare codes), placeholder contrast, dependent dropdowns; required-first grouping and sections; tabs show where errors/missing fields are; keyboard flow; on-blur validation, error summary that jumps to the field; no lost work.
 - **Tables / lists:** search; filters; sorting; sticky header on long tables; pagination or virtual scroll; row actions visible (not hover-only); bulk actions if users act on many rows; numbers right-aligned; usable mobile layout (cards or horizontal scroll with pinned first column); useful empty state.
 - **Dashboards:** most important number first; every metric labelled with unit and period; charts have titles and legends; no decoration without data.
 - **Modals / dialogs:** clear title; one primary action; Esc and a close button work; focus trapped and returned; not used for things that should be a page.
@@ -136,6 +145,10 @@ Score the target 0–100. Each category starts at its max; subtract per issue in
 
 Show the per-category breakdown. After the fix, re-score honestly with the same rules — no points for things you didn't actually fix.
 
+**Always show the score**, before and after, in every run — even when the changes are small. A small change with a low after-score is important information.
+
+For forms and data-entry screens, also show the **Effort table** (fields, required, dropdowns, decisions, clicks to complete, typing, tabs) before → after. See the forms reference.
+
 ## Step 6 — Report (blunt, short)
 
 Talk like a straight-talking senior designer. Direct, some attitude is fine, no fluff. Each issue = what's wrong + why it hurts the user + where (file:line) + evidence (axe rule, measured value, or screenshot).
@@ -157,6 +170,13 @@ In `quick` mode, stop here.
 
 ## Step 7 — The fix
 
+Split the work into two tiers and say which is which:
+
+- **Required fixes — always do these.** Every 🔴 and 🟠 issue. Using the existing design system, even if the user said "keep my look". The only acceptable reason to leave one is a real blocker (needs a backend/API change, needs a product decision, needs data you don't have) — state the blocker per issue.
+- **Recommended upgrades — propose, show, ask.** Bigger improvements that change how the screen works: reordering or regrouping fields, swapping control types, splitting a long tab into sections or steps, deriving/defaulting fields, presets, "copy from previous". Show them in the demo (as a second "Upgraded" variant if needed) with the effort/score gain, and apply them only when the user says yes — unless they already asked for a full redesign.
+- 🟡 polish items may be left out, but list them.
+
+Then:
 - Fix **root causes first**, in the shared component, then page-specific issues. Order: 🔴 → 🟠 → 🟡.
 - When changing a shared component, check every place it's used still looks right; keep its props API backward compatible, or update all call sites.
 - For "also affected" screens: if the component fix covers them, say so. If they need their own edits, list them and ask before editing more than ~5 files.
@@ -170,7 +190,8 @@ In `quick` mode, stop here.
 **Verify for real when you can:** after applying the fix, reload in the browser, take the same screenshots (`ui-fix/after-desktop.png`, `ui-fix/after-mobile.png`), re-run axe and the token scan, and re-score. If something still fails, fix it and check again before showing the user.
 
 **Build a single self-contained HTML demo** (`ui-fix/demo-<target>.html`):
-- **Before / After side by side** (stacked on mobile), each with its **score badge** and per-category bars.
+- **Before / After side by side** (stacked on mobile), each with its **score badge** and per-category bars. If you proposed recommended upgrades, add a third **Upgraded** view so the user can compare Before / Fixed / Upgraded.
+- For forms: the Effort table under each view, and a live After that really behaves — searchable selects filter, dependent dropdowns enable/reset, defaults pre-filled, error summary jumps to fields.
 - If real screenshots exist, show them (embedded as data URIs) with a desktop/mobile toggle.
 - A **live, interactive After** rebuilt in HTML with the real design.md tokens as CSS variables: hover/focus states, primary button shows loading → success, empty submit shows inline validation, toggles for empty/error/loading states.
 - Numbered callout badges on the After side matching the issue numbers in the report.
@@ -193,7 +214,8 @@ For native/Flutter/mobile targets, build the interactive After as a phone-width 
 ## Step 10 — Wrap up
 
 End with:
-- Score before → after, in one line.
+- Score before → after, in one line (and Effort before → after for forms).
+- Recommended upgrades not applied yet, each with its expected gain — ask which ones to do.
 - What changed, in one line.
 - Also-affected screens fixed vs still pending.
 - Anything you couldn't fix and why (needs backend, needs a product decision).
@@ -206,6 +228,8 @@ End with:
 - Don't invent a new visual style — follow the system.
 - Don't give a fix without a demo.
 - Don't inflate the after-score.
+- Don't treat "keep my look" as "change nothing visible" — keep the system, fix the problems.
+- Don't leave a 🔴 or 🟠 unfixed without naming the blocker.
 - Don't run against production.
 - Don't explain UX theory. Say what's wrong, prove it, fix it, show it.
 - Don't touch unrelated files or logic.

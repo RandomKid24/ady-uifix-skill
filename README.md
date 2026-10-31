@@ -105,7 +105,9 @@ Or just say it in plain words — "this vendor form is confusing, fix it", "the 
 6. **Tells you bluntly what's wrong**, with file:line and evidence, tagged 🔴 broken · 🟠 confusing · 🟡 off-system.
 7. **Fixes the root, not just the page.** If the problem lives in a shared `Button` or `Input`, it fixes that component and lists every other screen it also fixes.
 8. **Shows you the result.** A self-contained HTML demo: before vs after side by side, real screenshots, a live clickable "after" built with your real tokens, numbered callouts, scores, and the axe/token numbers before → after.
-9. **Grows your `design.md`.** When a fix needs a rule your design system doesn't have yet, it proposes the exact line and adds it (with a changelog entry) once you OK it. It never rewrites your existing rules on its own.
+9. **Makes forms faster to fill.** For forms and data-entry screens it counts the effort (fields, dropdowns, decisions, clicks, tabs) and cuts it down: derives and defaults values, swaps wrong controls (2-option dropdown → one-click toggle, 50-option dropdown → searchable), spells out codes, wires dependent dropdowns, groups long tabs into sections, and adds error summaries that jump to the field.
+10. **Fixes what's required, proposes the rest.** Every 🔴 and 🟠 gets fixed even if you said "keep my look" — it keeps your design system, not your problems. Bigger upgrades are shown as a separate "Upgraded" view in the demo for you to approve.
+11. **Grows your `design.md`.** When a fix needs a rule your design system doesn't have yet, it proposes the exact line and adds it (with a changelog entry) once you OK it. It never rewrites your existing rules on its own.
 
 ### Example report
 
@@ -151,6 +153,7 @@ Each issue costs 🔴 8 · 🟠 4 · 🟡 2 points in its category.
 skills/ui-fix/
 ├── SKILL.md                         # the skill
 ├── references/
+│   ├── forms-and-data-entry.md       # playbook for forms, dropdowns and data entry
 │   └── design-md-template.md         # template for generating a missing design.md
 └── scripts/
     ├── token-scan.mjs               # finds hardcoded colors/sizes/inline styles
