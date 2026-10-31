@@ -63,6 +63,15 @@ File: **`.ui-fix/memory.md`** in the project root (commit it). Read it **first**
 - YYYY-MM-DD: Labels spell out codes, code in brackets — "Purchase order no. (PO)". (approved)
 - YYYY-MM-DD: Dependent fields hide when parent is No, nested under parent with left border. (approved)
 
+## Superseded (an explicit redesign replaced these)
+- YYYY-MM-DD: "Redesign completely" on the dashboard superseded the earlier look decisions above for that screen.
+
+## Removed (stay removed unless asked)
+- YYYY-MM-DD: Weekly-trend widget removed from the dashboard.
+
+## Harness
+- `.ui-fix/harness/<screen>.mjs` — mocks <API routes>, fixtures from <path>, roles: <list>
+
 ## Rejected (don't propose again unless asked)
 - YYYY-MM-DD: Splitting the invoice form into a 4-step wizard — user prefers one page with a section index.
 
@@ -70,9 +79,9 @@ File: **`.ui-fix/memory.md`** in the project root (commit it). Read it **first**
 - Customer (not Client / Account) · PO = Purchase order · SKU = Stock keeping unit
 
 ## Screens
-| Screen | File | Last run | Score before → after | Open items |
-|---|---|---|---|---|
-| New invoice | src/pages/invoices/InvoiceForm.tsx | YYYY-MM-DD | 52 → 86 | section icons (proposed) |
+| Screen | File | Last run | Rubric | Score before → after | Open items |
+|---|---|---|---|---|---|
+| New invoice | src/pages/invoices/InvoiceForm.tsx | YYYY-MM-DD | v3 | 52 → 86 | section icons (proposed) |
 ```
 
 Rules:
@@ -105,20 +114,24 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 
 ## 6. Definition of done — check before you report
 
-- [ ] `.ui-fix/memory.md` read; decisions/rejections respected
-- [ ] design.md read (or absence stated)
+- [ ] Vague request → asked the one intake question (Fix / Polish / Redesign, which screen) — or stated the default
+- [ ] `.ui-fix/memory.md` read; decisions, superseded, removed and rejected items respected
+- [ ] design.md read (or absence stated); conflicts with measurable rules reported, not silently overridden
 - [ ] Screen brief written
-- [ ] Screenshots before (desktop + mobile)
+- [ ] Harness built/reused if the page needs login, an API or data; mocks match real response shapes
+- [ ] Screenshots before — desktop + mobile, every role/variant
 - [ ] Persona walkthrough before (Newcomer + Keyboard at minimum)
-- [ ] Visual critique written; style-inventory and layout-scan run (layout at desktop + 375px)
-- [ ] All other scans run (or stated why not)
+- [ ] Visual critique; style-inventory, layout-scan, text-density, clip-scan and the other scans run (or stated why not)
 - [ ] Stress tests run (or stated why not)
-- [ ] Issues ranked by Impact, each with evidence and principle tag
-- [ ] Layout blueprint + Why table produced for every section with layout issues
-- [ ] Every 🔴/🟠 fixed or blocker named — including layout (not just markers/renames)
-- [ ] Re-scanned, re-walked, re-scored after
-- [ ] Visual regression on all touched shared components
-- [ ] Design suggestions: 2–3 directions with tokens, who they suit, recommendation
-- [ ] Demo built (Before / Fixed / Upgraded / Directions); Fixed view shows the new layout
+- [ ] Issues ranked by Impact, each with evidence
+- [ ] Restore point made before multi-file edits; one-step undo stated; off switch where possible
+- [ ] Every 🔴/🟠 fixed or blocker named — including layout and hidden content
+- [ ] Screenshot after every change; dev server confirmed serving the change
+- [ ] Re-scanned, re-walked, re-scored with the same rubric version — every role/variant
+- [ ] Visual regression on everything a shared change touches
+- [ ] Something visible changed if the user asked to make it better — or it's stated plainly that it's subtle, with a bigger option
+- [ ] Design suggestions: 2–3 directions; for Redesign, rendered on the real page and one applied with undo
+- [ ] Report order: What you'll see → How to see it → What was wrong → Options → Not tested → Score (rubric v3) → Details → Files
+- [ ] Plain language in the main report; jargon only in Details
 - [ ] Regression guard added or proposed
-- [ ] memory.md and design.md updated (with approval)
+- [ ] memory.md (with rubric version) and design.md updated (with approval)

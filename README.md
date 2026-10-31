@@ -62,6 +62,14 @@ Or just describe the problem: *"this form is confusing, fix it"*, *"the dashboar
 
 Point it at a file, a folder, a local URL (`http://localhost:5173/checkout`), a screen by name, or a pasted screenshot.
 
+It asks **one question first** when the request is vague: what feels wrong, and how far to go —
+
+| Level | What happens |
+|---|---|
+| **Fix** | Broken and confusing things only. Your look stays |
+| **Polish** | Fix + tidied look within your design system |
+| **Redesign** | A new look — 2–3 directions rendered on your real page, the best one applied, one-step undo |
+
 | Mode | What you get |
 |---|---|
 | `fix` *(default)* | Everything: understand → see → walk → measure → judge → fix → prove → remember |
@@ -75,11 +83,11 @@ Point it at a file, a folder, a local URL (`http://localhost:5173/checkout`), a 
 
 | Phase | What happens |
 |---|---|
-| **0. Remember** | Reads `.ui-fix/memory.md` (past decisions, rejected ideas, glossary) and your `design.md`. No design.md? Says so and offers to generate one |
+| **0. Ask & remember** | Asks one question if the request is vague (Fix / Polish / Redesign, which screen). Reads `.ui-fix/memory.md` (past decisions, rejected ideas, glossary) and your `design.md`. No design.md? Says so and offers to generate one |
 | **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
 | **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
 | **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, other scripts (Devanagari, Arabic, CJK, Thai, Cyrillic), right-to-left, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
-| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then eight scanners: **visual style inventory**, **layout & spacing**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
+| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then ten scanners: **visual style inventory**, **layout & spacing**, **text density**, **clipped content**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
 | **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
 | **6. Report** | Blunt and short. Always ends with **design suggestions**: 2–3 concrete visual directions (e.g. Clean & calm, Compact pro, Guided) with the exact tokens that change and which one it recommends. A **layout blueprint** that says where every component goes, how wide, with what spacing — and why. Hierarchy, rename, dependency, effort, stress and consistency tables |
 | **7. Fix** | Visual polish within your design system, always. Every 🔴 and 🟠 fixed (with your existing design system) or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve |
@@ -87,6 +95,8 @@ Point it at a file, a folder, a local URL (`http://localhost:5173/checkout`), a 
 
 ### What it catches
 
+- **Text & content** — too many words on a dashboard (aim ≤ 250), text under 13px, piles of explanation lines, the same number shown twice, content hidden by fixed-height cards and cut-off text
+- **Dashboards** — no headline, too many signals, duplicated metrics, details not on demand, charts that don't answer a question
 - **Visual design** — too many font sizes/colours/radii/button styles, near-duplicate sizes, brand colour on everything, flat or noisy surfaces, inconsistent components, nothing standing out, dated look, low-contrast text
 - **Layout & spacing** — forms stretched 1800px wide, Yes/No buttons floating in empty columns, a full-width dropdown next to a tiny button pair, number fields as wide as a paragraph, zig-zag 2-column grids of unrelated fields, near-miss alignment, random gaps (13px here, 22px there), ragged rows, children placed in the wrong column
 - **Hierarchy & naming** — section titles that look like field labels, a section and its field with the same name, near-identical labels, codes like SKU/PO/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No with no visible selection
@@ -117,13 +127,15 @@ Walkthrough: Newcomer 12 steps · 5 friction · completed ✓ | Keyboard ✗ stu
 Root cause: 1 comes from components/form/Section.tsx — also affected: SignupForm, AddressForm.
 ```
 
-### Score
+### Score (rubric v3)
+
+Scores are only compared within the same rubric version.
 
 | Category | Points |
 |---|---|
 | Clarity, hierarchy, naming & way-finding | 20 |
 | Layout, spacing & placement | 20 |
-| Usability for this kind of UI | 15 |
+| Usability for this kind of UI + text & content | 15 |
 | States & feedback | 10 |
 | Accessibility & keyboard | 15 |
 | Visual design, system & consistency | 10 |
@@ -133,6 +145,24 @@ Root cause: 1 comes from components/form/Section.tsx — also affected: SignupFo
 
 ---
 
+## What you get back
+
+Plain language, in this order:
+1. **What you will see differently** — max 5 changes, with where to look
+2. **How to see it** — URL, role, refresh or restart, whether anything is committed, and how to undo
+3. **What was wrong**
+4. **Options to go further** — design directions
+5. **Not tested**
+6. **Score** (rubric v3)
+7. **Details** — the technical evidence
+8. **Files changed**
+
+Safe to try: before editing several files it saves a **restore point** (`.ui-fix/runs/<run>/backup-before/` + `restore.sh`), screenshots after **every** change, checks your dev server is really serving it, and re-renders **every role/variant** of a shared screen.
+
+Pages behind login or an API: it builds a reusable **test harness** (Playwright + mocked routes using your own fixtures, matching your real API shapes) in `.ui-fix/harness/`.
+
+Says *"I don't see changes"*? It checks, in order: files changed → server serving them → right URL/role → hard refresh → only local → or just subtle (and offers a bigger option).
+
 ## Project files it creates
 
 ```
@@ -140,7 +170,8 @@ your-project/
 ├── design.md                  # your design system (generated if missing, with your OK)
 └── .ui-fix/
     ├── memory.md              # decisions, rejected ideas, glossary, score history — commit this
-    └── runs/<date>-<screen>/  # screenshots, scan results, demo.html — add to .gitignore
+    ├── harness/               # reusable test harness for pages behind login/API — commit this
+    └── runs/<date>-<screen>/  # screenshots, backups, restore.sh, demo.html — add to .gitignore
 ```
 
 ## Get the most out of it
@@ -159,6 +190,8 @@ your-project/
 skills/ui-fix/
 ├── SKILL.md                              # the pipeline
 ├── references/
+│   ├── harness-and-safety.md             # test harness, restore points, "I don't see changes", rule conflicts
+│   ├── dashboards-and-content.md         # dashboard check, text density, clipped content
 │   ├── visual-design.md                  # type, colour roles, surfaces, components, polish, design directions
 │   ├── layout-and-spacing.md             # grid, alignment, balance, widths, spacing, placement, blueprint
 │   ├── understand-the-screen.md          # purpose, data flow, element inventory, Screen brief
@@ -169,6 +202,8 @@ skills/ui-fix/
 │   ├── prove-and-remember.md             # impact ranking, proof, regression guard, memory, hand-off
 │   └── design-md-template.md             # starter design.md
 └── scripts/
+    ├── text-density.js                   # words per section/screen, tiny text, repeated numbers (browser)
+    ├── clip-scan.js                      # text hidden by fixed heights / overflow / ellipsis (browser)
     ├── style-inventory.js                # counts fonts, sizes, colours, radii, shadows, button styles; contrast (browser)
     ├── layout-scan.js                    # grid, balance, dead zones, widths, spacing rhythm, layout map (browser)
     ├── axe-run.js                        # accessibility + tap targets + overflow (browser)
