@@ -1,6 +1,6 @@
 # Style library — 12 complete visual styles
 
-Each style is a full, buildable starting point. **None is the default.** Pick by the product's identity (`visual-design.md` §0), blend two when it fits (e.g. Dense pro structure + Warm hospitality colour), and adapt to the brand anchors (brand colour replaces the style's accent; brand font replaces the style's font if it has one).
+Each style is a full, buildable starting point. **None is the default.** Each one also has a **Slop trap** (how the style turns into a template when applied by habit) and **Done right** — read both before using it, and run `../anti-slop.md` on the result. Pick by the product's identity (`visual-design.md` §0), blend two when it fits (e.g. Dense pro structure + Warm hospitality colour), and adapt to the brand anchors (brand colour replaces the style's accent; brand font replaces the style's font if it has one).
 
 All fonts are free (Google Fonts) unless the brand has its own. Values are starting points — tune to the brand, keep contrast ≥ 4.5:1 for text.
 
@@ -16,6 +16,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** comfortable.
 - **Signature details:** large section numerals ("01"), pull-quote style key metric, rules between sections, small caps labels, left-aligned ragged text.
 - **Avoid when:** heavy data entry, small screens with dense tables.
+- **Slop trap:** Serif headline + cream page + oxblood accent + numerals "01 02 03" sprinkled on content that has no sequence — the "boutique template".
+- **Done right:** Rules and a real type scale do the structure; numerals only where order matters; real report content with a real point of view.
 
 ## 2. Swiss functional
 - **Feels:** precise, rational, confident.
@@ -27,17 +29,21 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** regular.
 - **Signature details:** asymmetric grid, oversized numerals, flush-left everything, no shadows, no gradients.
 - **Avoid when:** users need warmth/reassurance (healthcare patients, consumer onboarding).
+- **Slop trap:** Giant numerals with nothing to say; red accent on everything; "grid" that is only a 3-up of identical cards.
+- **Done right:** The grid shows in alignment and asymmetry; the accent is used once per screen; numerals only for the figure that matters.
 
 ## 3. Soft & friendly
 - **Feels:** approachable, encouraging, light.
 - **Best for:** consumer apps, education, wellness, small-business tools, onboarding-heavy flows.
 - **Type:** *Nunito*, *Plus Jakarta Sans* or *Manrope*; generous line-height (1.6).
-- **Colour:** white or very light warm tint; a pastel tint per category/module (mint, lavender, peach, sky) with darker text tones of the same hue; brand colour for primary.
+- **Colour:** white or very light warm tint; neutral surfaces; pastel tints **only** where a category or module genuinely needs telling apart (with darker text of the same hue); brand colour for primary — not violet by default.
 - **Surfaces:** cards with soft large shadows (`0 8px 24px` at 6–8% opacity), no borders.
 - **Shape:** round (14–20px cards, full-pill buttons).
 - **Density:** comfortable/spacious.
 - **Signature details:** spot illustrations, emoji-free icon set with rounded strokes, celebratory success states, progress shown as friendly milestones.
 - **Avoid when:** dense data, finance/compliance, power users.
+- **Slop trap:** Lavender/violet primary, pastel-tinted stat cards, 20px radius on everything, "Good morning, Sam 👋", emoji icons — the most common AI look.
+- **Done right:** Brand or warm accent, white/neutral cards with one radius, pastels only as meaningful category chips, plain headlines, real illustration or none.
 
 ## 4. Dense pro
 - **Feels:** efficient, serious, built for experts.
@@ -49,6 +55,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** compact (32px controls, 8px gaps), but tap targets ≥ 44px on touch devices.
 - **Signature details:** keyboard shortcut hints, sticky headers and action bars, inline editing, split views, status chips, monospace IDs.
 - **Avoid when:** occasional or first-time users without onboarding.
+- **Slop trap:** "Dense" that is just cramped, grey-on-grey, no hierarchy.
+- **Done right:** 4px grid, aligned columns, strong table header, clear row hover/selection, zero decoration; compact but every row the same height.
 
 ## 5. Dark command center
 - **Feels:** focused, real-time, high-stakes.
@@ -60,6 +68,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** compact for data, big for the one headline value.
 - **Signature details:** live indicators (pulsing dot), sparklines, threshold lines on charts, alarm states that are impossible to miss, clock/last-updated always visible.
 - **Avoid when:** used in bright environments or by occasional users; always offer a light theme too if users switch contexts.
+- **Slop trap:** Neon glows, gradient lines, purple on black, pulsing everything.
+- **Done right:** Surface steps + hairlines, one signal colour per state, thresholds and last-updated visible; motion only on live data.
 
 ## 6. Industrial
 - **Feels:** rugged, unambiguous, glove-friendly.
@@ -71,6 +81,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** spacious targets (48–56px), few items per screen.
 - **Signature details:** huge primary action, status as full-width coloured bars, big numbers, scan-friendly codes, minimal text, works one-handed.
 - **Avoid when:** office knowledge work, marketing pages.
+- **Slop trap:** Hazard-stripe and metal-texture decoration; tiny text on a rugged theme.
+- **Done right:** Size and contrast for gloves and glare; yellow only for attention; big targets; no texture.
 
 ## 7. Warm hospitality
 - **Feels:** welcoming, sensory, human.
@@ -82,6 +94,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** comfortable; staff-facing screens (POS, booking desk) go compact but keep the warmth in colour.
 - **Signature details:** photos of dishes/services, time-slot chips, calendar as the hero, warm empty states.
 - **Avoid when:** dense financial reporting.
+- **Slop trap:** Beige + serif + terracotta on a product with no warmth in the content.
+- **Done right:** Warmth from photography of the real place or food, real names and copy, not from tinting everything.
 
 ## 8. Clinical calm
 - **Feels:** safe, clean, trustworthy, legible.
@@ -93,6 +107,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** regular; critical info never hidden.
 - **Signature details:** confirmations before irreversible actions, audit trail visible, clear status labels, large readable values with units.
 - **Avoid when:** you need energy or playfulness.
+- **Slop trap:** Teal + white cards + an icon on every row.
+- **Done right:** Maximum legibility, explicit status words, one clear action, nothing decorative.
 
 ## 9. Neo-brutalist
 - **Feels:** bold, honest, energetic, memorable.
@@ -104,6 +120,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** regular.
 - **Signature details:** buttons that "press" (shadow collapses on click), sticker-like badges, big type, deliberate asymmetry.
 - **Avoid when:** conservative enterprise, healthcare, finance, accessibility-first audiences (keep contrast strong if used).
+- **Slop trap:** Random hard shadows and rainbow blocks on an ordinary layout.
+- **Done right:** Only when the brand wants it; a constrained palette; structure comes from the thick lines and a strict grid.
 
 ## 10. Premium minimal
 - **Feels:** refined, quiet, expensive.
@@ -115,6 +133,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** spacious.
 - **Signature details:** fewer elements, larger type, slow subtle motion, numbers presented with restraint.
 - **Avoid when:** high-volume operational work.
+- **Slop trap:** Gold small caps on cream, huge empty space, for any product — looks unfinished without great photography and type.
+- **Done right:** Restraint needs excellent type, spacing and real imagery; if you don't have them, use a different style.
 
 ## 11. Playful / gamified
 - **Feels:** fun, motivating, alive.
@@ -126,6 +146,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** comfortable.
 - **Signature details:** mascot reacts to state (success/empty/error), streaks, badges, progress as levels, small celebratory motion — always skippable and never blocking work.
 - **Avoid when:** serious/regulated contexts, or let it live only in non-critical areas (greeting, achievements) while work areas stay calm.
+- **Slop trap:** Mascots, confetti and bouncing everywhere, including data screens.
+- **Done right:** One character with a job; calm data screens; celebration only at real milestones.
 
 ## 12. Corporate trust
 - **Feels:** stable, established, reliable.
@@ -137,6 +159,8 @@ All fonts are free (Google Fonts) unless the brand has its own. Values are start
 - **Density:** regular.
 - **Signature details:** clear breadcrumbs, explicit labels, summaries before details, printable/exportable views, visible security cues.
 - **Avoid when:** you need to stand out or feel young.
+- **Slop trap:** Navy + blue chips + stock-photo hero — generic enterprise.
+- **Done right:** One specific thing about this firm (its mark, its data language, strong tables and clear forms) carries the identity.
 
 ---
 

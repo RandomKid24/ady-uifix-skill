@@ -4,6 +4,8 @@
 
 Point it at a page, form, table, modal or single component. `ui-fix` works out what the screen is for, walks it as real users, measures everything, fixes it against your `design.md`, proves the fix with before/after numbers and visual regression, and remembers your decisions for next time.
 
+It also fixes what makes UI look **machine-made**: inconsistent margins and padding, everything centred, off-scale spacing, shouting copy, gradients and glows, emoji icons, the same SaaS template for every product. The result is a screen with proper spacing, plain words, easy navigation and a look that belongs to *your* product. For React + Tailwind it builds with [befui](https://github.com/RandomKid24/befui) components, restyled to your brand.
+
 Works with **Claude Code, OpenCode, Antigravity, Codex** — and any tool that reads skills.
 
 The bar: **someone who has never seen your app knows what this screen is, what to click, and what happens next — without thinking. Daily users finish in the fewest steps. Nobody loses work.**
@@ -87,14 +89,15 @@ It asks **one question first** when the request is vague: what feels wrong, and 
 | **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
 | **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
 | **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, other scripts (Devanagari, Arabic, CJK, Thai, Cyrillic), right-to-left, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
-| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then ten scanners: **visual style inventory**, **layout & spacing**, **text density**, **clipped content**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
+| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then eleven scanners: **slop scan** (off-grid spacing, sibling mismatches, centred text, AI tells), **visual style inventory**, **layout & spacing**, **text density**, **clipped content**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
 | **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
 | **6. Report** | Blunt and short. Always ends with **design suggestions**: 2–3 visual directions built from **your product's own identity** (brand, personality, users, domain) — genuinely different from each other and from the generic SaaS look — rendered on your real page, with the exact tokens that change and which one it recommends. A **layout blueprint** that says where every component goes, how wide, with what spacing — and why. Hierarchy, rename, dependency, effort, stress and consistency tables |
-| **7. Fix** | Visual polish within your design system, always. Every 🔴 and 🟠 fixed (with your existing design system) or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve |
+| **7. Fix** | In a fixed order — **spacing → alignment → words → colour → type → icons → details → motion → one rich moment** — so each pass makes the next one easier. Controls come from your own components first, then **befui** (asks before adding), then your kit. Every 🔴 and 🟠 fixed or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve. A screen with no slop is left alone |
 | **8. Prove** | Re-scans, re-walks, re-scores. **Visual regression** on every screen using a changed shared component. Checks the save payload and tests still pass. Builds a demo with Before / Fixed / Upgraded / each design direction as tabs — pick a look by seeing it — with a proof panel. Adds a regression test or lint rule. Updates design.md and memory |
 
 ### What it catches
 
+- **AI-generated look** (measured by `slop-scan.js`) — spacing off the 4px scale (13px here, 22px there), siblings with different padding or height, text and whole layouts centred by default, an app squeezed into a narrow centred column, violet→blue gradients, gradient text, coloured glows, emoji as icons, UPPERCASE tracked labels, weight-800 headings, "Welcome back 👋", hype words and `!`, unverifiable claims, infinite pulses, `transition: all`, bouncy easing
 - **Generic look** — screens that could be any SaaS template (light grey page, white cards, tiny uppercase labels, one blue button, pills, pastel gradient). Every product should look like itself; it starts from your brand and personality and runs an anti-template check
 - **Text & content** — too many words on a dashboard (aim ≤ 250), text under 13px, piles of explanation lines, the same number shown twice, content hidden by fixed-height cards and cut-off text
 - **Dashboards** — no headline, too many signals, duplicated metrics, details not on demand, charts that don't answer a question
@@ -164,28 +167,75 @@ Pages behind login or an API: it builds a reusable **test harness** (Playwright 
 
 Says *"I don't see changes"*? It checks, in order: files changed → server serving them → right URL/role → hard refresh → only local → or just subtle (and offers a bigger option).
 
+## Looks designed, not generated
+
+Most "AI UI" fails in the same ways, and most of them are measurable. `ui-fix` checks them before and after, and fixes **craft first, decoration never**:
+
+| Craft check | What it enforces |
+|---|---|
+| **Spacing** | One scale (multiples of 4). Same thing, same size — siblings share padding, height and gap. Space shows grouping: inside a group < between groups < between sections |
+| **Alignment** | Text, labels, lists and tables are left-aligned; numbers right-aligned; one left edge per column. Apps fill the window — no 640px centred column in a 1440px app. Centre only a short title or an object in free space |
+| **Words** | Plain and short: "Save changes", not "Submit". No hype words, no `!`, no greeting headlines, comparisons say what they compare to ("+12% vs last month"), seed data looks real |
+| **Hierarchy** | One primary action, one headline value, size and colour before weight, three text roles |
+| **Navigation** | Where am I, what's next, how do I get out — obvious to a stranger. Disabled things explain why |
+| **Uniqueness** | Quiet chrome, **one rich moment** per screen and **one signature detail** that only this product has. The swap test: put another product's name on it — if it still fits, it's a template |
+
+It also decides **how much to change**: heavy slop → full pass; light slop → only what the scan found; none → *"this is fine"* and at most three small refinements. It never redesigns a good screen just to make it different.
+
+```
+slop-scan.js  →  heavy slop — full pass
+  gradientText 1 · hueGradient 1 · colouredGlow 3 · emoji 1 · greetingHeadline 1 · hypeWords 1
+  uppercaseTrackedLabel 3 · infiniteAnimation 3 · transitionAll 3 · bouncyEasing 1
+  craft: offGridSpacing 20 (13px×4, 17px×4, 22px×4…) · siblingPaddingMismatch 1 · narrowCentredColumn 1 · centred text 100%
+
+slop-scan.js  →  little or no slop — leave the look alone, fix craft items only
+```
+
+**The previews below follow the same rules** — every screen was run through `slop-scan.js`: spacing on the 4px grid, left-aligned, no gradients, glows or emoji. The only flags are weight-800 headings in Swiss and Industrial, which those styles call for (and the report would say so).
+
+## Components: befui
+
+For **React + Tailwind** projects, `ui-fix` builds controls with **[befui](https://github.com/RandomKid24/befui)** ([docs](https://befui.vercel.app)) — 273 copy-paste components, 38 page blocks, 389 icons and 10 palettes on Radix + Tailwind 4, plus the same components as `<bef-*>` HTML tags and 121 Flutter widgets. You own every file; there's no package to upgrade.
+
+<img src="docs/images/befui-blocks.png" width="900" alt="befui blocks: admin shell, people overview, employee directory">
+
+- **Order:** your own components → **befui** → your UI kit. If your project already uses befui it just uses it; if not, it recommends it once and **asks before** running `init`/`add` (those touch `index.css`, `AGENTS.md`, `.mcp.json` and npm packages).
+- **Real commands, no guessing:** `npx github:RandomKid24/befui add select combobox`, `list`, `diff`, `update`, and an MCP server (`list_components`, `get_component`, `add_components`). Never retyped from memory, never mixed with another icon set.
+- **A job-to-component map** (forms, dependent dropdowns, tables, charts, approvals, settings, auth, AI chat, time…) so it picks `cascader` or `combobox` for the right reason.
+- **Not left at the default.** befui's default is quiet slate + blue; ui-fix restyles through its tokens (`--primary`, `--radius`, density, palette, type) so your product keeps its own identity instead of looking like every befui site.
+- Fix-level example: a hand-built dropdown with no keyboard support becomes `select`/`combobox`, payload and handlers unchanged; Polish sets the tokens; Redesign builds each direction from different components.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/befui-dashboard.png" alt="befui ecommerce dashboard block"></td>
+<td width="50%"><img src="docs/images/befui-table.png" alt="befui reports table block"></td>
+</tr>
+</table>
+
+<sub>befui is by the same author, MIT-licensed. Screenshots are from its README. Full guide for agents: <code>skills/ui-fix/references/library/befui.md</code>.</sub>
+
 ## Design library
 
 So it doesn't design every product the same way, the skill carries a library a senior designer would have in their head. It picks from it by **your product's identity**, and its 2–3 directions always use different styles or blends.
 
 ### 12 visual styles
 
-The same screen in each style. Every style comes with fonts, colours, surfaces, shape, density, signature details, when to use and avoid it — and the skill blends two when it fits (e.g. *Dense pro × Warm hospitality* for a POS).
+Each style is shown on a screen from the domain it suits — not the same dashboard re-skinned. Every style comes with fonts, colours, surfaces, shape, density, signature details, when to use and avoid it, plus a **slop trap** (how it turns into a template when used by habit) and **done right**. The skill blends two when it fits (e.g. *Dense pro × Warm hospitality* for a POS).
 
 | | |
 |---|---|
 | <img src="docs/images/style-editorial.png" width="400" alt="Editorial style"> | <img src="docs/images/style-swiss.png" width="400" alt="Swiss functional style"> |
-| **Editorial** — Reports, knowledge bases, premium B2B | **Swiss functional** — Admin consoles, analytics |
+| **Editorial** — a quarterly review · reports, knowledge bases, premium B2B | **Swiss functional** — an orders console · admin, analytics |
 | <img src="docs/images/style-soft.png" width="400" alt="Soft & friendly style"> | <img src="docs/images/style-dense-pro.png" width="400" alt="Dense pro style"> |
-| **Soft & friendly** — Consumer, education, onboarding | **Dense pro** — ERP, accounting, ops — all-day use |
+| **Soft & friendly** — a lesson · consumer, education, onboarding | **Dense pro** — purchase orders · ERP, accounting, all-day use |
 | <img src="docs/images/style-dark-command.png" width="400" alt="Dark command center style"> | <img src="docs/images/style-industrial.png" width="400" alt="Industrial style"> |
-| **Dark command center** — Monitoring, IoT, energy, control rooms | **Industrial** — Factory floor, warehouse, field tablets |
+| **Dark command center** — an energy meter · monitoring, IoT, control rooms | **Industrial** — a machine board · factory floor, warehouse, tablets |
 | <img src="docs/images/style-warm-hospitality.png" width="400" alt="Warm hospitality style"> | <img src="docs/images/style-clinical.png" width="400" alt="Clinical calm style"> |
-| **Warm hospitality** — Restaurants, salons, hotels, booking | **Clinical calm** — Healthcare, pharma, labs, compliance |
+| **Warm hospitality** — a restaurant floor · restaurants, salons, hotels | **Clinical calm** — a ward list · healthcare, pharma, labs |
 | <img src="docs/images/style-neo-brutalist.png" width="400" alt="Neo-brutalist style"> | <img src="docs/images/style-premium-minimal.png" width="400" alt="Premium minimal style"> |
-| **Neo-brutalist** — Startups, creative tools, youth brands | **Premium minimal** — Wealth, real estate, luxury |
+| **Neo-brutalist** — a sprint board · startups, creative tools | **Premium minimal** — a private portfolio · wealth, luxury |
 | <img src="docs/images/style-playful.png" width="400" alt="Playful style"> | <img src="docs/images/style-corporate-trust.png" width="400" alt="Corporate trust style"> |
-| **Playful** — Engagement, learning, products with a mascot | **Corporate trust** — Banking, insurance, enterprise, government |
+| **Playful** — a reading app · engagement, learning, mascots | **Corporate trust** — an approvals queue · banking, insurance, enterprise |
 
 ### Layout patterns
 
@@ -203,14 +253,12 @@ The right variant for the content — e.g. the control depends on how many optio
 
 <img src="docs/images/components.png" alt="Component variants">
 
-**Building with React + Tailwind?** [befui](https://befui.vercel.app) has copy-paste components on Radix + Tailwind, including HRMS and marketing blocks, with a CLI and an MCP server. ui-fix uses your project's existing components first; where a React + Tailwind project has nothing for the job, it suggests befui (and asks before adding anything).
-
 ### Domain playbooks & type/colour
 
 - **Domains** — what good looks like for HR, ERP/manufacturing, POS/restaurant, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring/IoT, real estate, internal tools and marketing sites.
 - **Type & colour** — 13 font pairings by personality, type scales, a full palette built from your brand colour (OKLCH), 8 colour strategies, dark mode, colour-blind-safe chart colours.
 
-<sub>Preview images are generated by `docs/build-previews.py` — re-run it after changing the library.</sub>
+<sub>Preview images are generated by `docs/build-previews.py` (screens in `docs/screens.py`) — re-run it after changing the library. The `docs/` folder isn't installed with the skill.</sub>
 
 ## Project files it creates
 
@@ -239,6 +287,7 @@ your-project/
 skills/ui-fix/
 ├── SKILL.md                              # the pipeline
 ├── references/
+│   ├── anti-slop.md                      # craft checks, AI tells → fixes, uniqueness, how much to change, order of passes
 │   ├── harness-and-safety.md             # test harness, restore points, "I don't see changes", rule conflicts
 │   ├── dashboards-and-content.md         # dashboard check, text density, clipped content
 │   ├── visual-design.md                  # type, colour roles, surfaces, components, polish, design directions
@@ -251,12 +300,14 @@ skills/ui-fix/
 │   ├── prove-and-remember.md             # impact ranking, proof, regression guard, memory, hand-off
 │   ├── design-md-template.md             # starter design.md
 │   └── library/
-│       ├── styles.md                     # 12 complete visual styles + blending
+│       ├── befui.md                      # befui: when, exact CLI/MCP, job→component map, restyling via tokens
+│       ├── styles.md                     # 12 complete visual styles + slop traps + blending
 │       ├── patterns.md                   # layouts per screen type
 │       ├── components.md                 # component variants
 │       ├── domains.md                    # what good looks like per domain
 │       └── type-and-colour.md            # font pairings, palettes, dark mode, chart colours
 └── scripts/
+    ├── slop-scan.js                      # off-grid spacing, sibling mismatches, centring, gradients/glows/emoji, hype copy, motion (browser)
     ├── text-density.js                   # words per section/screen, tiny text, repeated numbers (browser)
     ├── clip-scan.js                      # text hidden by fixed heights / overflow / ellipsis (browser)
     ├── style-inventory.js                # counts fonts, sizes, colours, radii, shadows, button styles; contrast (browser)
@@ -275,5 +326,7 @@ node ~/.claude/skills/ui-fix/scripts/token-scan.mjs src/pages
 ```
 
 ---
+
+The "audit the common signs of generated UI, fix in layered passes, leave good screens alone" idea is in the spirit of [unslop](https://heydamir.design/unslop) by Damir Sokolovsky (CC BY 4.0). The checks, scan and rules here are written for ui-fix.
 
 MIT · Made by [Aditya Badgujar](https://adityabadgujar.dev) at [BeForth](https://beforth.in)

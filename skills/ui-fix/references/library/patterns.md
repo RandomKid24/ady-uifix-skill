@@ -11,7 +11,7 @@ For each screen type, several proven layouts. Pick by the job, the users and the
 | **KPI strip + detail** | 3–4 headline numbers on top, one main chart/table below, secondary list on the side | Managers checking status | Don't let the strip grow past 4–5 |
 | **My day** | Greeting + the user's own tasks/next actions first, team/status below | Personal home screens for staff (HR, CRM, service) | Keep personal and team clearly separated |
 | **Command center** | One large live view (map, line, floor plan, status grid) + alarms rail + small KPIs | Monitoring, ops, energy/IoT, logistics | Alarms must dominate when active |
-| **Bento grid** | Tiles of varied sizes on a grid; size = importance | Overview with many different kinds of info | Every tile needs a reason; avoid equal-size tile soup |
+| **Bento grid** | Tiles of varied sizes on a grid; size = importance | Overview with many different kinds of info | Every tile needs a reason; avoid equal-size tile soup — a bento of eight equal cards, each with an icon, is the slop version |
 | **Feed / inbox** | Chronological or priority-sorted list of items needing action | Approvals, tickets, notifications, activity | Clear unread/priority states; bulk actions |
 | **Split list-detail** | List left, selected item detail right | Triage, review, CRM leads, support | Keep list visible on desktop; stack on mobile |
 | **Report / narrative** | Headline sentence → key numbers → explained charts, top to bottom | Weekly/monthly reports, owners and execs | Each chart answers one stated question |

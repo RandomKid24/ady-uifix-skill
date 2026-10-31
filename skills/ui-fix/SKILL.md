@@ -1,6 +1,6 @@
 ---
 name: ui-fix
-description: Audit and fix any page, form, table, dashboard or UI component like a senior UI engineer — asks how far to go (fix, polish or redesign), understands what the screen is for, walks it as real users, measures it (layout, visual design, text density, clipped content, accessibility, naming, dependencies, keyboard, stress), fixes it against the project's design.md with a restore point, proves the change with screenshots, and explains what you'll see in plain language. Use when a screen looks wrong, is confusing, hard to use, needs to look better, or on /ui-fix.
+description: Audit and fix any page, form, table, dashboard or UI component like a senior UI engineer — asks how far to go (fix, polish or redesign), understands what the screen is for, walks it as real users, measures it (layout, visual design, text density, clipped content, accessibility, naming, dependencies, keyboard, stress), fixes it against the project's design.md with a restore point (consistent spacing, proper alignment, plain words, clear navigation, a look that belongs to the product and doesn't read as AI-generated; uses befui components for React + Tailwind), proves the change with screenshots, and explains what you'll see in plain language. Use when a screen looks wrong, is confusing, hard to use, looks generic or AI-made, needs to look better, or on /ui-fix.
 ---
 
 # UI Fix
@@ -16,6 +16,8 @@ The user points at something: a page, a form, a table, a dashboard, a modal, one
 - **Evidence over opinion.** Every finding has proof: a measured number, a screenshot, a walkthrough step.
 - **Effort is the enemy.** Remove work: derive, default, defer, delete.
 - **Every product looks like itself.** There is no default look. Start from the product's identity — brand, personality, domain, users, context — and never converge on the generic SaaS template (light grey page, white cards, tiny uppercase labels, one blue button, pills, pastel gradient). Directions must differ from each other and from other projects.
+- **Crafted, not generated.** Every size, space and word is a decision: one spacing scale, siblings identical, text left-aligned (not everything centred), plain words, quiet chrome, one rich moment and one signature that only this product has. Measure it with `scripts/slop-scan.js` (`references/anti-slop.md`). Don't swap one trend for another.
+- **Use real components, restyled.** For React + Tailwind projects, befui (the user's own library: 273 components, 38 page blocks) is the default source for controls, with the project's own components first. Restyle through tokens so the product keeps its own look (`references/library/befui.md`).
 - **Have a design opinion.** Judge how it looks and always come back with concrete visual suggestions. "Follow the design system" means don't change the look *silently* — never "have no opinion".
 - **Layout is the fix, not decoration.** Grid, alignment, balance, spacing, widths and placement decide whether a screen feels right.
 - **Visible beats invisible.** Behind-the-scenes fixes (labels linked to fields, screen-reader names, contrast tweaks) are good — but when the user asked to make it *better*, they must also see a difference.
@@ -40,6 +42,7 @@ Read the reference before the phase that uses it. Load only what the target need
 |---|---|
 | `references/understand-the-screen.md` | Every run — Phase 1 |
 | `references/visual-design.md` | Every run — visual critique, within-system polish, design directions |
+| `references/anti-slop.md` | **Every run** — the craft checks (spacing, alignment & centring, plain words, hierarchy, navigation), the measurable "AI-generated" tells and their fixes, uniqueness (one moment + one signature), how much to change, order of passes |
 | `references/layout-and-spacing.md` | Every run — grid, alignment, balance, widths, spacing, placement, layout blueprint |
 | `references/hierarchy-and-naming.md` | Every run — headings vs labels, confusing names, placeholders |
 | `references/walkthrough-and-stress.md` | Every run — personas, stress tests, consistency |
@@ -49,11 +52,13 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/forms-and-data-entry.md` | Forms, wizards, settings, data entry |
 | `references/dependencies-and-navigation.md` | Dependent fields, or 4+ sections / long scroll |
 | `references/design-md-template.md` | When design.md is missing |
+| `references/library/befui.md` | **React + Tailwind projects (or on request)** — befui: when to use it, exact CLI/MCP commands, which component or block for which job, and how to restyle it so the product keeps its identity |
 | `references/library/styles.md` | **Design library** — 12 complete visual styles (Editorial, Swiss functional, Soft & friendly, Dense pro, Dark command center, Industrial, Warm hospitality, Clinical calm, Neo-brutalist, Premium minimal, Playful, Corporate trust) with type, colour, surfaces, shape, density, signature details, when to use/avoid, and blending |
 | `references/library/patterns.md` | Layout patterns per screen type — dashboards, navigation, lists, detail pages, forms, settings, onboarding, empty states, feedback, search, mobile |
 | `references/library/components.md` | Variants for metrics, buttons, inputs, choices, tables, status, progress, timelines, people, charts, dates, overlays, toasts, empty states, motion |
 | `references/library/domains.md` | What good looks like per domain — HR, ERP, POS, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring, real estate, internal tools, marketing sites |
 | `references/library/type-and-colour.md` | Font pairings by personality, type scales, building a palette from a brand colour (OKLCH), colour strategies, dark mode, chart colours |
+| `scripts/slop-scan.js` | Browser — spacing off the grid, sibling padding/height mismatch, centred text and narrow centred columns, gradients, glows, emoji, UPPERCASE labels, heavy weights, hype words, `!`, infinite animations, `transition: all` |
 | `scripts/style-inventory.js` | Browser — fonts, sizes, colours, radii, shadows, button styles in use; contrast |
 | `scripts/layout-scan.js` | Browser — container width, grid, alignment, row balance, dead zones, widths, spacing, layout map |
 | `scripts/text-density.js` | Browser — words per section/screen, tiny text, explanation lines, repeated numbers |
@@ -82,6 +87,18 @@ Browser scripts: run the file's contents with the browser's JS tool (or Playwrig
 - `sweep` — audit every screen in a folder/route group → ranked table → fix shared root causes first. Ask before editing more than ~5 files.
 - `handoff` — like `quick`, plus a paste-ready implementation prompt for another coding agent.
 
+## The quick path (the order, in one screen)
+
+1. **Ask first, once** if the request is vague (Phase 0) → read `.ui-fix/memory.md`, design.md, the product identity; note whether the project already uses befui.
+2. **Understand** the screen: purpose, users, data in/out → Screen brief (Phase 1).
+3. **See** it: screenshots before (desktop + 375px, every role) — use a harness if there is login/API (Phase 2).
+4. **Walk** it as a newcomer and a keyboard user (Phase 3).
+5. **Measure:** `slop-scan.js`, `layout-scan.js`, `style-inventory.js`, `text-density.js`, `clip-scan.js`, `hierarchy-scan.js`, `axe-run.js`, `focus-scan.js` (+ `dependency-scan.js` for forms) — keep the numbers (Phase 4).
+6. **Judge** by impact; slop counts fold into L (layout, spacing, placement) and V (visual design) — rubric v3 stays unchanged (Phase 5).
+7. **Report** in the fixed order — what you'll see, how to see it, what was wrong, options, not tested, score, details, files (Phase 6).
+8. **Fix** after a restore point, in this order: **spacing → alignment/centring → words → colour → type → icons → details → motion → the one rich moment** (Phase 7; levels decide how far). Controls come from the project's own components, then befui, then the project's kit.
+9. **Prove:** re-run every scan, re-screenshot, re-walk, re-score; slop tells must be 0 or explained (Phase 8). **Remember** decisions, look signature, harness. Done-checklist in `prove-and-remember.md`.
+
 ## Safety
 
 - Local / dev / staging only. Never production. Never submit real data. Walkthroughs and `dependency-scan.js` click choices — never Save/Submit/Delete unless the data is disposable and you say so.
@@ -104,7 +121,7 @@ Then:
    - design.md vs code → design.md wins; flag it.
    - **design.md vs a measurable accessibility rule** (e.g. placeholder contrast) → report the conflict, apply a scoped opt-in fix, propose the rule change. Never override silently (`harness-and-safety.md` §4).
 3. **Product identity** (`visual-design.md` §0, plus the matching playbook in `library/domains.md`): personality (3 adjectives), context of use, brand anchors (logo, colours, typeface, mascot/illustration), domain cues, and distinctive things to keep — from design.md, brand assets in the repo, memory, the existing UI, the Screen brief. Still unclear and it matters (Polish/Redesign) → fold it into the one intake question: "three words for how it should feel?". Read the stored **look signature** from memory if there is one.
-4. Note the stack, component library, icon set, test/lint setup, and whether the screen differs by **role or variant**.
+4. Note the stack, component library, icon set, test/lint setup, and whether the screen differs by **role or variant**. **befui?** It's in use if `src/components/ui/*`, `src/lib/utils.ts` (`cn`), an `AGENTS.md` block "## UI components (befui)" or a `befui` entry in `.mcp.json` exist — then it's the project's kit, use it. React + Tailwind without it → recommend it once and ask before adding (`references/library/befui.md`).
 5. Run folder: `.ui-fix/runs/<YYYY-MM-DD>-<target-slug>/`.
 
 ## Phase 1 — Understand the screen
@@ -127,6 +144,7 @@ From `references/walkthrough-and-stress.md`: persona walkthroughs (always Newcom
 
 Keep the raw numbers for before → after:
 - **Visual critique** (`layout-and-spacing.md` §1 + `visual-design.md` §1): 5–8 lines on grid, alignment, balance, rhythm, focal point, reading path, density, fit, type, colour, surfaces — and **identity**: could you tell which product this is with the logo covered?
+- `slop-scan.js` — always (spacing off the grid, sibling mismatches, centred text, gradients/glows/emoji, UPPERCASE labels, hype words, infinite animations…). Read `references/anti-slop.md` first.
 - `style-inventory.js` — always.
 - `layout-scan.js` — always, desktop and 375px.
 - `text-density.js` — always. Dashboards/overviews: aim ≤ 250 words per screen, explanations in tooltips.
@@ -150,7 +168,7 @@ Only real problems. Categories:
 - **E. Accessibility** — contrast, focus, keyboard, names on icon buttons, colour never the only signal.
 - **F. Responsive & stress.**
 - **G. Consistency** — same job, same pattern, same names.
-- **V. Visual design** (`visual-design.md`).
+- **V. Visual design & slop** (`visual-design.md`, `anti-slop.md`) — identity, hierarchy of emphasis, the measurable AI tells, anything that makes this product look like every other one. Hand-built controls that befui (or the project's kit) already provides, with real defects, are findings under **A**.
 - **A. Design-system adherence.**
 
 For every issue: severity (🔴 blocks / hides / loses data · 🟠 confuses / slows · 🟡 polish), **Impact = Severity × Frequency × Reach**, evidence, file:line, principle tag (tags go in Details, not the main report). Root cause: shared component or theme → list every screen, role and variant it affects.
@@ -168,6 +186,8 @@ Each category starts at max; subtract per issue (🔴 −8, 🟠 −4, 🟡 −2
 | Accessibility & keyboard (E) | 15 |
 | Visual design, system & consistency (V + A + G) | 10 |
 | Responsive & stress (F) | 10 |
+
+**Slop findings** (spacing off the scale, sibling mismatches, centring, tells) count under L and V with the usual penalties — no new category, so rubric v3 stays comparable.
 
 **Keep the rubric stable.** Always say "rubric v3" next to a score. Compare scores only within the same rubric version; if memory holds an older-version score, show it but don't compare. Change the rubric only in a new skill version.
 
@@ -224,6 +244,8 @@ Always:
 - **Verify the dev server serves the change** before judging it (`harness-and-safety.md` §1.7).
 - Root causes first; shared component changes keep the API compatible or update every call site.
 - Project's stack, components, icon set and tokens only; propose design.md rules instead of inventing silently.
+- **Components:** project's own → befui (React + Tailwind; ask before `init`/`add`; use its CLI/MCP, never retype or hand-copy) → the project's kit. Replace a broken hand-built control with the library one, keep the payload and handlers, then set the tokens so it looks like this product (`library/befui.md` §4).
+- **Anti-slop order** (`anti-slop.md` §5): spacing → alignment/centring → words → colour → type → icons → details → motion → moment. Finish each pass across the whole screen before the next. Don't change a screen that has no slop just to make it different.
 - Keep business logic, payloads and data flow intact.
 - Workflow upgrades (wizard, presets, copy-from-previous) → show as an Upgraded view, apply on a yes. Check memory's Rejected list first.
 
@@ -258,6 +280,9 @@ Check the Definition of done (`prove-and-remember.md`), then deliver the Phase 6
 - Don't reintroduce removed widgets, or re-propose rejected ideas.
 - Don't leave a 🔴/🟠 unfixed without naming the blocker.
 - Don't run against production, submit real data, or click destructive actions.
+- Don't leave an AI tell unexplained (gradient, glow, emoji, hype copy, `!`, centred paragraphs, infinite pulse, `transition: all`) — remove it or state the reason it belongs to the product.
+- Don't centre text blocks or shrink an app into a narrow centred column.
+- Don't ship befui components at their default look; don't hand-copy or retype them; don't add them without asking.
 - Don't fall back to a default look. No two products should come out looking the same — run the anti-template check.
 - Don't flatten a product's distinctive features (mascot, signature colour, characterful type) into neutral.
 - Don't add new libraries or touch unrelated logic.

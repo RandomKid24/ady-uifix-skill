@@ -2,6 +2,8 @@
 
 Read this on **every run**. Usability and layout make a screen work; visual design makes it feel like **this** product — clear, trustworthy, and recognisably its own. A screen can be usable and still look dated, noisy, cheap — or generic. Judge all of that, and **always come back with concrete visual design suggestions**.
 
+**Components:** if the project is React + Tailwind, look at befui (`library/befui.md`) before inventing a control; restyle it through its tokens so it looks like this product, not like every befui site.
+
 Two kinds of output, never confuse them:
 1. **Polish within the system** — required. Use the product's existing tokens and components better. No approval needed.
 2. **Design suggestions** — always proposed, applied only on approval (or at the Redesign level). Shown as rendered options; the chosen one is written into design.md.
@@ -116,7 +118,7 @@ Without asking, using existing tokens:
 
 ## 5. Anti-template check — before proposing or applying any look
 
-The most common AI-generated UI right now is: very light grey page · white cards with 1px light border and ~12px radius · tiny uppercase grey section labels · one blue primary button · pill-shaped stat chips · thin progress bars · soft pastel gradient hero · the same neo-grotesk sans · "empty state" grey sentences centred in boxes.
+The most common AI-generated UI right now is: very light grey page (or a violet→blue gradient) · white cards with 1px light border and ~12–24px radius · tiny uppercase grey section labels · one blue or violet primary button · pill-shaped stat chips · thin progress bars · soft pastel or glowing hero · emoji icons and "Welcome back 👋" · the same neo-grotesk sans at weight 700+ · a sparkline in every stat card · everything centred, "empty state" grey sentences centred in boxes. The full list of measurable tells, with fixes, is `anti-slop.md`; `scripts/slop-scan.js` counts them.
 
 None of these are wrong on their own. Together, applied by default, they make every product look the same.
 
@@ -126,6 +128,8 @@ For every direction (and for the Fixed result), count how many of those traits i
 - **6+** → it's the template. Rework it from the identity (§0) and the axes (§3).
 
 Also check memory: if the last 2–3 runs in this project (or the same agency's other projects listed in memory) applied a look with the same axes, say so and offer a direction that differs.
+
+**Run `anti-slop.md` after the anti-template check** — it covers what this check can't: spacing consistency, alignment and centring, plain words, motion, and the "one rich moment + one signature" rule that makes a result unique instead of merely clean.
 
 ## 6. Remember the look
 

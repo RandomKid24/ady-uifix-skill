@@ -122,3 +122,16 @@ Then a **Why table** — one line per decision:
 | Gaps 13/16/22px → 24 field / 48 section | on the 8-scale; groups now readable [Proximity][Consistency] |
 
 The blueprint is what the Fixed view in the demo must show, and what the code change implements.
+
+---
+
+## 9. Centring and spacing consistency (the two most common "AI layout" faults)
+
+Details and the scan are in `anti-slop.md` §1; the rules to apply while fixing layout:
+
+- **Not everything is centred.** Text, labels, lists, tables, long headings and form fields are left-aligned (right-aligned for numbers). Centre only a short title (1–2 lines), an object in free space (loader, empty-state block, modal), or a deliberately symmetrical piece (a login card).
+- **Apps fill the window.** Sidebar/rail + fluid content, content capped around 1440–1600. A 640px centred column inside a 1440 window is wrong for an app; right only for a reading page or one form — and the text inside stays left-aligned. `slop-scan.js` reports `narrowCentredColumn` and `centredStack`.
+- **Same thing, same space.** Siblings of one kind share padding, height and gap; `slop-scan.js` reports `siblingPaddingMismatch`, `siblingHeightMismatch` and uneven gaps. Fix by making them one component/class — not by nudging values.
+- **Every value on the scale** (multiples of 4). `offGridSpacing` lists the offenders; map each to the nearest step and, where it repeats, to a token.
+- **Space shows structure.** Inside group < between groups < between sections. If every gap is 16, nothing is grouped.
+
