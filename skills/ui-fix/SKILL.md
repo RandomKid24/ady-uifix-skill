@@ -27,6 +27,8 @@ Bundled files (paths relative to this SKILL.md):
 - `references/understand-the-screen.md` — **read this on every run**: purpose, users, data in/out, flow, element inventory, primary task path, Screen brief
 - `references/hierarchy-and-naming.md` — **read this on every run**: section titles vs labels, squint test, label-only test, duplicate/similar/vague names, abbreviations, placeholders, fake values, choice states
 - `scripts/hierarchy-scan.js` — run in the browser: measures heading vs label styles and spacing, finds duplicate/similar/truncated labels, generic placeholders, "NA" values, choice groups with no visible selection
+- `references/dependencies-and-navigation.md` — **read for any form with dependent fields or 4+ sections**: parent→child links, hide vs disable, numbered sections, section index, icons
+- `scripts/dependency-scan.js` — run in the browser (local/dev only): flips each Yes/No, radio, checkbox and small select, maps which fields get hidden/disabled/required/changed, checks the child sits next to its parent, finds greyed-out fields with no reason, restores original values
 - `references/forms-and-data-entry.md` — **read this for any form, wizard, settings page, or data-entry screen** (input choice, dropdowns, effort table, flow, validation)
 - `scripts/token-scan.mjs` — finds hardcoded colors/sizes/inline styles (design-token drift)
 - `scripts/axe-run.js` — paste into the browser to run axe-core accessibility checks
@@ -96,6 +98,8 @@ If no browser is available or the target can't run (e.g. native app), say so in 
 
 **Hierarchy & naming.** In the browser, run the contents of `scripts/hierarchy-scan.js` (set `ROOT` to the target's selector). It returns: section-title vs field-label size/weight ratios (flags anything under 1.25× without extra weight/color), gap above sections vs gap between fields, labels equal to their section name, duplicate and similar labels, abbreviations, vague labels, truncated labels, generic placeholders ("Select"), fake values ("NA", "-"), and choice groups with no visible selected state. Without a browser, check the same things from the code and screenshots.
 
+**Dependencies.** On forms, also run `scripts/dependency-scan.js` (local/dev/staging only — it clicks choices, never Save/Submit, and restores them). Combine with a code search for conditions on other fields (`disabled={!x}`, `watch()`, `v-if`, `required_if`, effects that reset fields). Output the **Dependency map**: Parent · Value · Child · Effect · Visible link? · Layout.
+
 **Design-token drift:**
 ```bash
 node <skill-dir>/scripts/token-scan.mjs <target files or folders> [--json]
@@ -116,6 +120,13 @@ Use the screenshots plus the code. Only report real problems.
 - **Label-only test**: read just the labels as a stranger. Section and field with the same name ("Packaging" → "Packaging"), near-identical names (Tray Type / Tray MOC / Tray Master), codes and abbreviations (MOC, Qty., HMI), vague labels ("Data Required" — required for what?), master-table names used as labels, truncated labels → fix each with a Rename table.
 - Placeholders say what to pick ("Select tray type"); no fake values ("NA") in fields; list values typed as text → multi-select.
 - Choice groups (Yes/No etc.) show a clear selected state and don't look like action buttons.
+
+**I. Dependencies & way-finding (read `references/dependencies-and-navigation.md`)**
+- Every child field sits right under its parent and looks attached (indent, connector, shared box). Child in another column → 🟠; in another section/tab → 🔴.
+- Child that's meaningless when the parent is off → hide it and reveal on change. If kept disabled, it must say why ("Turn on Door Access System to choose a type"). Silent grey boxes → 🟠.
+- Parent change clears/re-filters the child and says so; hidden values never get submitted; required follows visibility.
+- Many Yes/No feature toggles in one section → a checklist of features, each expanding its own details.
+- 4+ sections or long scroll → numbered, specific section titles (no "Other"/"Misc"), sticky section index with current section and completion, tabs showing missing-field counts, section icons from the project's icon set (icon + text, never icon-only).
 
 **B. The zero-context user test (most important)**
 - What is this screen? Clear title? Would someone know where they are?
@@ -160,7 +171,7 @@ Score the target 0–100. Each category starts at its max; subtract per issue in
 
 | Category | Max |
 |---|---|
-| Clarity, hierarchy & naming (H + B) | 25 |
+| Clarity, hierarchy, naming & way-finding (H + I + B) | 25 |
 | Type-specific usability (C) | 20 |
 | States & feedback (D) | 15 |
 | Accessibility (E + axe) | 15 |
@@ -170,6 +181,8 @@ Score the target 0–100. Each category starts at its max; subtract per issue in
 Show the per-category breakdown. After the fix, re-score honestly with the same rules — no points for things you didn't actually fix.
 
 **Always show the score**, before and after, in every run — even when the changes are small. A small change with a low after-score is important information.
+
+For forms with dependent fields, always include the **Dependency map**.
 
 Always include the **Hierarchy table** (level · size · weight · spacing, from hierarchy-scan) and a **Rename table** (current label · new label · why) whenever any label changes.
 
@@ -220,7 +233,7 @@ Then:
 
 **Build a single self-contained HTML demo** (`ui-fix/demo-<target>.html`):
 - **Before / After side by side** (stacked on mobile), each with its **score badge** and per-category bars. If you proposed recommended upgrades, add a third **Upgraded** view so the user can compare Before / Fixed / Upgraded.
-- For forms: the Effort table under each view, and a live After that really behaves — searchable selects filter, dependent dropdowns enable/reset, defaults pre-filled, error summary jumps to fields.
+- For forms: the Effort table under each view, and a live After that really behaves — searchable selects filter, dependent fields reveal under their parent when switched on, defaults pre-filled, error summary jumps to fields, section index highlights and jumps.
 - If real screenshots exist, show them (embedded as data URIs) with a desktop/mobile toggle.
 - A **live, interactive After** rebuilt in HTML with the real design.md tokens as CSS variables: hover/focus states, primary button shows loading → success, empty submit shows inline validation, toggles for empty/error/loading states.
 - Numbered callout badges on the After side matching the issue numbers in the report.
