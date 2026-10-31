@@ -96,19 +96,20 @@ Or just say it in plain words — "this vendor form is confusing, fix it", "the 
 
 1. **Understands the screen before judging it.** Works out what it's for, who uses it and how often, what data it loads and saves (reads the API and backend too), the business rules, where users come from and go next, what every element is for, and the shortest path to get the job done. Shows you a short *Screen brief* so you can confirm it understood — and catches UI ↔ backend mismatches like fields the server requires but the form doesn't mark.
 2. **Reads your `design.md`.** Colors, fonts, spacing, components, rules — every fix follows it. No `design.md`? It tells you, works from your Tailwind config / CSS variables / theme for now, and offers to generate one.
-3. **Looks at the real thing.** Runs your dev server, screenshots the target at desktop and 375px mobile, and triggers states like empty submit and focus. *(Local / dev / staging only — never production.)*
-4. **Measures it.**
+3. **Checks hierarchy and naming.** Measures section titles vs field labels in the browser (size, weight, spacing) and flags when they look alike. Reads the labels like a stranger would: same name for a section and its field, near-identical names, codes like MOC/Qty., vague labels, truncated text, "Select" placeholders, "NA" typed into fields, Yes/No groups with no visible selection. Gives you a rename table.
+4. **Looks at the real thing.** Runs your dev server, screenshots the target at desktop and 375px mobile, and triggers states like empty submit and focus. *(Local / dev / staging only — never production.)*
+5. **Measures it.**
    - **axe-core** accessibility check with real numbers ("contrast 2.8:1, needs 4.5:1")
    - **Token scan** for hardcoded colors, px values, Tailwind arbitrary values and inline styles that should be design tokens
    - Tap targets under 44px, horizontal overflow on mobile
-5. **Checks it like a first-time user would.** One obvious main button? Labels that say what happens? A way out? Feedback after every click? Plus checks for the kind of UI it is — forms, tables, dashboards, modals, navigation, single components, data-entry screens, public pages.
-6. **Scores it 0–100** across 6 categories, before and after.
-7. **Tells you bluntly what's wrong**, with file:line and evidence, tagged 🔴 broken · 🟠 confusing · 🟡 off-system.
-8. **Fixes the root, not just the page.** If the problem lives in a shared `Button` or `Input`, it fixes that component and lists every other screen it also fixes.
-9. **Shows you the result.** A self-contained HTML demo: before vs after side by side, real screenshots, a live clickable "after" built with your real tokens, numbered callouts, scores, and the axe/token numbers before → after.
-10. **Makes forms faster to fill.** For forms and data-entry screens it counts the effort (fields, dropdowns, decisions, clicks, tabs) and cuts it down: derives and defaults values, swaps wrong controls (2-option dropdown → one-click toggle, 50-option dropdown → searchable), spells out codes, wires dependent dropdowns, groups long tabs into sections, and adds error summaries that jump to the field.
-11. **Fixes what's required, proposes the rest.** Every 🔴 and 🟠 gets fixed even if you said "keep my look" — it keeps your design system, not your problems. Bigger upgrades are shown as a separate "Upgraded" view in the demo for you to approve.
-12. **Grows your `design.md`.** When a fix needs a rule your design system doesn't have yet, it proposes the exact line and adds it (with a changelog entry) once you OK it. It never rewrites your existing rules on its own.
+6. **Checks it like a first-time user would.** One obvious main button? Labels that say what happens? A way out? Feedback after every click? Plus checks for the kind of UI it is — forms, tables, dashboards, modals, navigation, single components, data-entry screens, public pages.
+7. **Scores it 0–100** across 6 categories, before and after.
+8. **Tells you bluntly what's wrong**, with file:line and evidence, tagged 🔴 broken · 🟠 confusing · 🟡 off-system.
+9. **Fixes the root, not just the page.** If the problem lives in a shared `Button` or `Input`, it fixes that component and lists every other screen it also fixes.
+10. **Shows you the result.** A self-contained HTML demo: before vs after side by side, real screenshots, a live clickable "after" built with your real tokens, numbered callouts, scores, and the axe/token numbers before → after.
+11. **Makes forms faster to fill.** For forms and data-entry screens it counts the effort (fields, dropdowns, decisions, clicks, tabs) and cuts it down: derives and defaults values, swaps wrong controls (2-option dropdown → one-click toggle, 50-option dropdown → searchable), spells out codes, wires dependent dropdowns, groups long tabs into sections, and adds error summaries that jump to the field.
+12. **Fixes what's required, proposes the rest.** Every 🔴 and 🟠 gets fixed even if you said "keep my look" — it keeps your design system, not your problems. Bigger upgrades are shown as a separate "Upgraded" view in the demo for you to approve.
+13. **Grows your `design.md`.** When a fix needs a rule your design system doesn't have yet, it proposes the exact line and adds it (with a changelog entry) once you OK it. It never rewrites your existing rules on its own.
 
 ### Example report
 
@@ -131,7 +132,7 @@ Verdict: Usable if you built it. Anyone else is guessing.
 
 | Category | Points |
 |---|---|
-| Clarity & primary action | 25 |
+| Clarity, hierarchy & naming | 25 |
 | Usability for this kind of UI | 20 |
 | States & feedback | 15 |
 | Accessibility | 15 |
@@ -155,9 +156,11 @@ skills/ui-fix/
 ├── SKILL.md                         # the skill
 ├── references/
 │   ├── understand-the-screen.md      # purpose, data flow, element inventory, Screen brief
+│   ├── hierarchy-and-naming.md       # headings vs labels, confusing names, placeholders
 │   ├── forms-and-data-entry.md       # playbook for forms, dropdowns and data entry
 │   └── design-md-template.md         # template for generating a missing design.md
 └── scripts/
+    ├── hierarchy-scan.js            # measures headings vs labels, finds confusing names
     ├── token-scan.mjs               # finds hardcoded colors/sizes/inline styles
     └── axe-run.js                   # runs axe-core + tap-target/overflow checks in the browser
 ```

@@ -25,6 +25,8 @@ The bar for every fix: **a first-time user with zero context knows what this scr
 
 Bundled files (paths relative to this SKILL.md):
 - `references/understand-the-screen.md` — **read this on every run**: purpose, users, data in/out, flow, element inventory, primary task path, Screen brief
+- `references/hierarchy-and-naming.md` — **read this on every run**: section titles vs labels, squint test, label-only test, duplicate/similar/vague names, abbreviations, placeholders, fake values, choice states
+- `scripts/hierarchy-scan.js` — run in the browser: measures heading vs label styles and spacing, finds duplicate/similar/truncated labels, generic placeholders, "NA" values, choice groups with no visible selection
 - `references/forms-and-data-entry.md` — **read this for any form, wizard, settings page, or data-entry screen** (input choice, dropdowns, effort table, flow, validation)
 - `scripts/token-scan.mjs` — finds hardcoded colors/sizes/inline styles (design-token drift)
 - `scripts/axe-run.js` — paste into the browser to run axe-core accessibility checks
@@ -92,6 +94,8 @@ If no browser is available or the target can't run (e.g. native app), say so in 
 
 **Accessibility — axe-core.** In the browser, run the contents of `scripts/axe-run.js` (set `TARGET` to the target's CSS selector, or leave `null` for the whole page). It returns violations with impact, rule, node count, and a sample selector. Or use the CLI if available: `npx @axe-core/cli <url>`. Record actual numbers (e.g. "contrast 2.8:1, needs 4.5:1").
 
+**Hierarchy & naming.** In the browser, run the contents of `scripts/hierarchy-scan.js` (set `ROOT` to the target's selector). It returns: section-title vs field-label size/weight ratios (flags anything under 1.25× without extra weight/color), gap above sections vs gap between fields, labels equal to their section name, duplicate and similar labels, abbreviations, vague labels, truncated labels, generic placeholders ("Select"), fake values ("NA", "-"), and choice groups with no visible selected state. Without a browser, check the same things from the code and screenshots.
+
 **Design-token drift:**
 ```bash
 node <skill-dir>/scripts/token-scan.mjs <target files or folders> [--json]
@@ -105,6 +109,13 @@ It reports hardcoded hex/rgb/hsl colors, raw px values, Tailwind arbitrary value
 Use the screenshots plus the code. Only report real problems.
 
 **A. Design-system drift** — wrong tokens, fonts, spacing, one-off components where a system component exists, deprecated patterns.
+
+**H. Hierarchy & naming (check first — read `references/hierarchy-and-naming.md`)**
+- **Squint test** on the screenshot: can you count the sections and see where each starts and ends? Section titles that look like field labels → 🔴.
+- **Heading scan**: section titles alone read like a table of contents.
+- **Label-only test**: read just the labels as a stranger. Section and field with the same name ("Packaging" → "Packaging"), near-identical names (Tray Type / Tray MOC / Tray Master), codes and abbreviations (MOC, Qty., HMI), vague labels ("Data Required" — required for what?), master-table names used as labels, truncated labels → fix each with a Rename table.
+- Placeholders say what to pick ("Select tray type"); no fake values ("NA") in fields; list values typed as text → multi-select.
+- Choice groups (Yes/No etc.) show a clear selected state and don't look like action buttons.
 
 **B. The zero-context user test (most important)**
 - What is this screen? Clear title? Would someone know where they are?
@@ -149,7 +160,7 @@ Score the target 0–100. Each category starts at its max; subtract per issue in
 
 | Category | Max |
 |---|---|
-| Clarity & primary action (B) | 25 |
+| Clarity, hierarchy & naming (H + B) | 25 |
 | Type-specific usability (C) | 20 |
 | States & feedback (D) | 15 |
 | Accessibility (E + axe) | 15 |
@@ -159,6 +170,8 @@ Score the target 0–100. Each category starts at its max; subtract per issue in
 Show the per-category breakdown. After the fix, re-score honestly with the same rules — no points for things you didn't actually fix.
 
 **Always show the score**, before and after, in every run — even when the changes are small. A small change with a low after-score is important information.
+
+Always include the **Hierarchy table** (level · size · weight · spacing, from hierarchy-scan) and a **Rename table** (current label · new label · why) whenever any label changes.
 
 For forms and data-entry screens, also show the **Effort table** (fields, required, dropdowns, decisions, clicks to complete, typing, tabs) before → after. See the forms reference.
 
@@ -242,6 +255,7 @@ End with:
 ## Don'ts
 - Don't skip the design.md check, ever.
 - Don't judge a screen before you know what it's for and what it does — Screen brief first.
+- Don't call a screen fine if section titles look like labels or two names can be confused — that's the first thing a new user hits.
 - Don't invent a new visual style — follow the system.
 - Don't give a fix without a demo.
 - Don't inflate the after-score.
