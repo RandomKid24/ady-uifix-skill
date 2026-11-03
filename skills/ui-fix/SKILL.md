@@ -43,6 +43,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/understand-the-screen.md` | Every run — Phase 1 |
 | `references/visual-design.md` | Every run — visual critique, within-system polish, design directions |
 | `references/anti-slop.md` | **Every run** — the craft checks (spacing, alignment & centring, plain words, hierarchy, navigation), the measurable "AI-generated" tells and their fixes, uniqueness (one moment + one signature), how much to change, order of passes |
+| `references/affordance.md` | **Every run** — can a user tell what is clickable? Signals per control type, expand/collapse (chevron, whole-row button), rows that open things, predictable results, how to fix |
 | `references/layout-and-spacing.md` | Every run — grid, alignment, balance, widths, spacing, placement, layout blueprint |
 | `references/hierarchy-and-naming.md` | Every run — headings vs labels, confusing names, placeholders |
 | `references/walkthrough-and-stress.md` | Every run — personas, stress tests, consistency |
@@ -59,6 +60,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/library/domains.md` | What good looks like per domain — HR, ERP, POS, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring, real estate, internal tools, marketing sites |
 | `references/library/type-and-colour.md` | Font pairings by personality, type scales, building a palette from a brand colour (OKLCH), colour strategies, dark mode, chart colours |
 | `scripts/slop-scan.js` | Browser — spacing off the grid, sibling padding/height mismatch, centred text and narrow centred columns, gradients, glows, emoji, UPPERCASE labels, heavy weights, hype words, `!`, infinite animations, `transition: all` |
+| `scripts/affordance-scan.js` | Browser — controls that give no sign they are clickable: expanders with no chevron, clickable text/cards with no cue, links that look like text, ghost buttons that look like labels |
 | `scripts/style-inventory.js` | Browser — fonts, sizes, colours, radii, shadows, button styles in use; contrast |
 | `scripts/layout-scan.js` | Browser — container width, grid, alignment, row balance, dead zones, widths, spacing, layout map |
 | `scripts/text-density.js` | Browser — words per section/screen, tiny text, explanation lines, repeated numbers |
@@ -145,6 +147,7 @@ From `references/walkthrough-and-stress.md`: persona walkthroughs (always Newcom
 Keep the raw numbers for before → after:
 - **Visual critique** (`layout-and-spacing.md` §1 + `visual-design.md` §1): 5–8 lines on grid, alignment, balance, rhythm, focal point, reading path, density, fit, type, colour, surfaces — and **identity**: could you tell which product this is with the logo covered?
 - `slop-scan.js` — always (spacing off the grid, sibling mismatches, **controls on one row with different height/radius/border/fill/text size**, centred text, gradients/glows/emoji, UPPERCASE labels, hype words, infinite animations…). Read `references/anti-slop.md` first.
+- `affordance-scan.js` — always. Then hover and tab to every item it reports and screenshot (hover feedback isn't measurable in the script). Read `references/affordance.md`.
 - `style-inventory.js` — always.
 - `layout-scan.js` — always, desktop and 375px.
 - `text-density.js` — always. Dashboards/overviews: aim ≤ 250 words per screen, explanations in tooltips.
@@ -161,7 +164,7 @@ Only real problems. Categories:
 - **L. Layout, spacing & placement** (`layout-and-spacing.md`) — one grid, aligned edges, sensible width, balanced rows, widths that match content, spacing on the scale with clear grouping, placement by task order → dependency → importance → grouping.
 - **H. Hierarchy & naming** (`hierarchy-and-naming.md`) — section titles vs labels, confusing/vague/abbreviated names, placeholders, fake values, choices that look like choices.
 - **I. Dependencies & way-finding** (`dependencies-and-navigation.md`) — child under its parent, hide or explain disabled, numbered sections, section index.
-- **B. Zero-context clarity** — what is this screen, one obvious primary action, labels that say what happens, a way out, feedback for every action.
+- **B. Zero-context clarity** — what is this screen, **what is clickable and how can I tell** (`affordance.md`), one obvious primary action, labels that say what happens, a way out, feedback for every action.
 - **C. By target type** — compare against the domain playbook (`library/domains.md`) and the best-fitting pattern (`library/patterns.md`) — is this the right layout pattern for the job at all? Then: forms (`forms-and-data-entry.md`); **dashboards** (`dashboards-and-content.md`: one headline sentence, 3 signals, no duplicated metrics, details on demand, a reason for every chart vs table); tables; modals; navigation; single components; staff/data-entry screens; public pages.
 - **T. Text & content** (`dashboards-and-content.md` §2–3) — too many words, tiny text, too many explanation lines, repeated numbers, **clipped/hidden content**.
 - **D. States** — loading, empty, error, disabled with reason, success.

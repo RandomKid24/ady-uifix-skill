@@ -24,7 +24,7 @@ Tag each issue with the principle it breaks, one word, so the reasoning is check
 
 A fix isn't done until it's proven. After applying changes:
 
-1. **Re-run every check** you ran before (axe-run, slop-scan, hierarchy-scan, dependency-scan, focus-scan, token-scan, stress tests). Before → after numbers go in the report.
+1. **Re-run every check** you ran before (axe-run, affordance-scan, slop-scan, hierarchy-scan, dependency-scan, focus-scan, token-scan, stress tests). Before → after numbers go in the report.
 2. **Re-walk the personas** on the primary task. Before → after: steps, clicks, friction points, completed yes/no.
 3. **Visual regression on everything you touched.** If you changed a shared component (Button, Input, Select, Card, Layout, theme), screenshot **every screen that uses it** — at least the "also affected" list, max ~10 — before and after, at desktop and 375px. Compare:
    ```bash
@@ -132,6 +132,7 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 - [ ] Visual regression on everything a shared change touches
 - [ ] Something visible changed if the user asked to make it better — or it's stated plainly that it's subtle, with a bigger option
 - [ ] Product identity written (personality, context, brand anchors, keep)
+- [ ] Affordance: every clickable thing has a visible signal (box / icon / underline / verb) + hover and focus; expanders have a chevron (`affordance.md`)
 - [ ] Anti-slop: every tell in `slop-scan.js` is 0 or has a stated reason; spacing on the grid, siblings equal, text left-aligned, plain words (`anti-slop.md`)
 - [ ] Components: project's own → befui (if React + Tailwind; asked before adding) → project's kit; befui restyled via tokens, not left at defaults (`library/befui.md`)
 - [ ] Design suggestions: 2–3 identity-driven directions from the design library (different styles/blends, patterns where useful), differing on ≥3 axes, anti-template check passed; for Redesign, rendered on the real page and one applied with undo

@@ -48,6 +48,7 @@ Don't scan the whole catalogue. Map the screen's job (from the Screen brief) to 
 | Tables & lists | `data-table` (sort, filter, paginate), `table` (dense parts), `tree-table`, `pivot-table`, `virtual-list`, `sortable-list`, `kanban`, `bar-list`, `saved-views`, `filter-bar` · blocks `reports-table`, `employee-directory`, `user-management` |
 | Numbers & charts | `stat-card`, `kpi-strip`, `usage-meter`, `progress`, `progress-ring`, `gauge`, `bullet-chart`, `line-chart`, `area-chart`, `stacked-bar-chart`, `funnel-chart`, `heatmap`, `sparkline-table` … (84 in Data) · blocks `sales-dashboard`, `finance-dashboard`, `analytics-dashboard`, `hrms-overview` |
 | Status & people | `badge`, `status-dot`, `avatar` (+ stacks, presence), `activity-feed`, `timeline`, `approval-flow`, `audit-log`, `profile-card` · blocks `leave-approvals`, `profile-page` |
+| Show/hide & confirm | `accordion`, `collapsible` (chevron + animated height — use these for any expand/collapse), `popconfirm`, `alert-dialog` (confirm destructive actions) |
 | Feedback | `alert`, `banner`, `toast`, `empty-state`, `error-state`, `skeleton`, `spinner`, `loader`, `popconfirm`, `alert-dialog` |
 | Overlays | `dialog`, `drawer`, `bottom-sheet`, `popover`, `dropdown-menu`, `tooltip`, `hover-card`, `tour`, `coachmark` |
 | Auth | blocks `sign-in`, `sign-up`, `reset-password`, `otp-verify` |

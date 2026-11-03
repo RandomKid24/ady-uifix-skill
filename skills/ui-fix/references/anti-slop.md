@@ -44,6 +44,7 @@ These matter more than any trend. Fix them in this order — each one changes ho
 ### 1.5 Navigation — a stranger finds their way
 - Current location is obvious (selected state, page title, breadcrumb where depth > 1).
 - Group nav by task or noun; section labels closer to their own items; 32–36px rows, icons in one column.
+- **Clickable things look clickable** — a box, an icon (chevron for expanders), an underline or a verb; with hover and focus states. An unmarked card that secretly opens is a finding (`affordance.md`, `affordance-scan.js`).
 - Every screen has one obvious next step and one obvious way out. Disabled things explain why. (See `dependencies-and-navigation.md`.)
 
 ---
