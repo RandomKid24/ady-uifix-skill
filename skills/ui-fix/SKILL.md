@@ -144,7 +144,7 @@ From `references/walkthrough-and-stress.md`: persona walkthroughs (always Newcom
 
 Keep the raw numbers for before → after:
 - **Visual critique** (`layout-and-spacing.md` §1 + `visual-design.md` §1): 5–8 lines on grid, alignment, balance, rhythm, focal point, reading path, density, fit, type, colour, surfaces — and **identity**: could you tell which product this is with the logo covered?
-- `slop-scan.js` — always (spacing off the grid, sibling mismatches, centred text, gradients/glows/emoji, UPPERCASE labels, hype words, infinite animations…). Read `references/anti-slop.md` first.
+- `slop-scan.js` — always (spacing off the grid, sibling mismatches, **controls on one row with different height/radius/border/fill/text size**, centred text, gradients/glows/emoji, UPPERCASE labels, hype words, infinite animations…). Read `references/anti-slop.md` first.
 - `style-inventory.js` — always.
 - `layout-scan.js` — always, desktop and 375px.
 - `text-density.js` — always. Dashboards/overviews: aim ≤ 250 words per screen, explanations in tooltips.

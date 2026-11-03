@@ -27,7 +27,7 @@ Always: label, unit, period. Tabular numbers. Don't repeat the same metric elsew
 
 ## Buttons
 - **Primary** (one per view), **secondary**, **tertiary/ghost**, **danger**, **icon button** (with tooltip + accessible name), **split button** (main action + menu), **toggle button** (pressed state).
-- Sizes: compact 32 · regular 40 · touch 48. Same height as inputs on the same row.
+- Sizes: compact 32 · regular 40 · touch 48. **Same height, radius, border and text size as the inputs and selects on the same row** — a filter bar is one family (`slop-scan.js` checks it).
 - Loading state keeps width; disabled state explains why (tooltip/helper).
 - Label = verb + object ("Create invoice").
 

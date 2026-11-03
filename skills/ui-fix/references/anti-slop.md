@@ -14,6 +14,7 @@ These matter more than any trend. Fix them in this order — each one changes ho
 
 ### 1.1 Spacing — one scale, one rhythm
 - Every margin, padding and gap is a multiple of **4** (use design.md's scale; 2px nudges inside small controls are fine). No `13px`, `11px`, `mt-[22px]`.
+- **Controls on one row are one family.** A search box, a dropdown and a button side by side share **one height** (design.md's control height; befui: `--control-h`, 36px, or `data-density`), **one corner radius, one border, one fill and one text size**. Different heights (a 64px search next to a 78px select) or a tinted search beside white dropdowns reads as three components from three projects. Fix by making all three use the same component tokens, not by nudging pixels. A primary button may differ in fill and weight, never in height or radius. `slop-scan.js` reports `controlRowMismatch` and says which of height / radius / border / fill / text size differs.
 - **Same thing, same size.** Rows in a list share one height and one gap. Cards in a row share one padding and one height. Inputs on a row share one height. `slop-scan.js` flags siblings whose padding or height differ.
 - **Space shows grouping.** Gap inside a group < gap between groups < gap between sections (e.g. 8 / 16 / 32). Equal gaps everywhere = no structure.
 - A section label sits closer to its own content than to what's above it (e.g. 24 above, 8 below).
@@ -66,6 +67,7 @@ These matter more than any trend. Fix them in this order — each one changes ho
 | | An icon in every card title / before every label | Noise | Icons only where they speed recognition |
 | **Copy** | Exclamation marks, hype words, greeting headlines, "New ✨" badges | Marketing voice in a tool | Plain sentences (§1.3) |
 | | Title Case Everywhere On Buttons | — | Sentence case |
+| **Controls** | Search, dropdown and button on one row with different heights, radii, borders or fills | Parts from different components | One control height, radius, border, fill and text size per row (§1.1) |
 | **Layout** | Hero/content blocks centred by default; text centred in multi-line blocks | Default flex centring | §1.2 |
 | | Equal 3-up or 4-up cards with the same icon-title-text structure | "Features" template | Vary scale and structure; lead with the one that matters |
 | | Dead empty bands, tiny content in a huge frame | Unfinished | Fill the viewport like the product it is |

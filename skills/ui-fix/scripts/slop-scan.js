@@ -1,6 +1,6 @@
 // ui-fix: slop scan. Run in the page (browser JS tool or Playwright page.evaluate). Read-only.
 // Counts the measurable "generated UI" tells and the craft problems behind them:
-//   spacing off the grid · sibling padding/height mismatch · centred text · narrow centred app column ·
+//   spacing off the grid · sibling padding/height mismatch · controls on one row that differ (height, radius, border, fill, text size) · centred text · narrow centred app column ·
 //   hue gradients · gradient text · coloured glows · emoji · UPPERCASE tracked labels · heavy weights ·
 //   hype words · exclamation marks · greeting headlines · trailing periods on short labels ·
 //   infinite animations · transition: all · bouncy easing.
@@ -119,6 +119,39 @@
       if (rowAligned && hs.size > 1 && Math.max(...hs) - Math.min(...hs) > 2 && g.every(k => !k.matches('p,span,a,li'))) addCraft('siblingHeightMismatch', g[0], g.length + ' side by side, heights ' + [...hs].slice(0, 4).join('/'));
       if (gapSet.size > 1 && Math.max(...gapSet) - Math.min(...gapSet) > 2) addCraft('uneven gaps between siblings', g[0], 'gaps ' + [...gapSet].join('/') + 'px');
     });
+  });
+
+  // ---- 4b. controls on one row: same height, radius, border, fill, text size ----
+  // A search box, a dropdown and a button sitting side by side are different elements — the sibling check above
+  // can't see them. Group every control by the line it sits on and compare what the eye compares.
+  const CTL = 'input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select, button, [role=combobox], [role=searchbox], [role=spinbutton]';
+  const hasBox = el => { const x = S(el); const bg = parseColor(x.backgroundColor); return px(x.borderTopWidth) > 0 || (bg && bg.a > 0.05) || (x.boxShadow && x.boxShadow !== 'none'); };
+  const boxOf = el => { let b = el; for (let i = 0; i < 3 && !hasBox(b) && b.parentElement && b.parentElement !== root; i++) b = b.parentElement; return hasBox(b) ? b : el; };
+  let ctls = [...new Set(V.filter(el => el.matches(CTL)).map(boxOf))].filter(vis).filter(el => { const r = el.getBoundingClientRect(); return r.height >= 24 && r.height <= 140 && r.width >= 40; });
+  ctls = ctls.filter(c => !ctls.some(o => o !== c && o.contains(c)));
+  const cr = ctls.map(el => ({ el, r: el.getBoundingClientRect() })).sort((a, b) => a.r.top - b.r.top);
+  const taken = new Set();
+  cr.forEach(a => {
+    if (taken.has(a)) return; taken.add(a); const row = [a];
+    cr.forEach(b => { if (!taken.has(b) && Math.abs((b.r.top + b.r.height / 2) - (a.r.top + a.r.height / 2)) < Math.max(a.r.height, b.r.height) / 2) { row.push(b); taken.add(b); } });
+    if (row.length < 2) return;
+    const els = row.sort((x, y) => x.r.left - y.r.left).map(x => x.el);
+    const inner = e => e.matches(CTL) ? e : (e.querySelector(CTL) || e);
+    const isField = e => { const i = inner(e); return !i.matches('button,[type=submit],[type=button]') && i.getAttribute('role') !== 'button'; };
+    const hs = els.map(e => Math.round(e.getBoundingClientRect().height));
+    const rad = els.map((e, i) => Math.round(Math.min(px(S(e).borderTopLeftRadius), hs[i] / 2)));
+    const fs = els.map(e => Math.round(px(S(inner(e)).fontSize)));
+    const fields = els.filter(isField);
+    const bor = fields.map(e => px(S(e).borderTopWidth) + 'px ' + S(e).borderTopColor);
+    const fill = fields.map(e => S(e).backgroundColor);
+    const spread = a => Math.max(...a) - Math.min(...a);
+    const probs = [];
+    if (spread(hs) > 2) probs.push('height ' + hs.join('/') + 'px');
+    if (spread(rad) > 2) probs.push('corner radius ' + rad.join('/') + 'px');
+    if (fields.length >= 2 && new Set(bor).size > 1) probs.push('border differs');
+    if (fields.length >= 2 && new Set(fill).size > 1) probs.push('fill differs');
+    if (spread(fs) > 1) probs.push('text size ' + fs.join('/') + 'px');
+    if (probs.length) addCraft('controlRowMismatch', els[0], els.length + ' controls on one row: ' + probs.join(' · '));
   });
 
   // ---- 5. centring ----

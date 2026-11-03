@@ -97,7 +97,7 @@ It asks **one question first** when the request is vague: what feels wrong, and 
 
 ### What it catches
 
-- **AI-generated look** (measured by `slop-scan.js`) — spacing off the 4px scale (13px here, 22px there), siblings with different padding or height, text and whole layouts centred by default, an app squeezed into a narrow centred column, violet→blue gradients, gradient text, coloured glows, emoji as icons, UPPERCASE tracked labels, weight-800 headings, "Welcome back 👋", hype words and `!`, unverifiable claims, infinite pulses, `transition: all`, bouncy easing
+- **AI-generated look** (measured by `slop-scan.js`) — spacing off the 4px scale (13px here, 22px there), siblings with different padding or height, **controls on one row that don't match (a 64px search next to 78px dropdowns, different radius, border or fill)**, text and whole layouts centred by default, an app squeezed into a narrow centred column, violet→blue gradients, gradient text, coloured glows, emoji as icons, UPPERCASE tracked labels, weight-800 headings, "Welcome back 👋", hype words and `!`, unverifiable claims, infinite pulses, `transition: all`, bouncy easing
 - **Generic look** — screens that could be any SaaS template (light grey page, white cards, tiny uppercase labels, one blue button, pills, pastel gradient). Every product should look like itself; it starts from your brand and personality and runs an anti-template check
 - **Text & content** — too many words on a dashboard (aim ≤ 250), text under 13px, piles of explanation lines, the same number shown twice, content hidden by fixed-height cards and cut-off text
 - **Dashboards** — no headline, too many signals, duplicated metrics, details not on demand, charts that don't answer a question
@@ -173,7 +173,7 @@ Most "AI UI" fails in the same ways, and most of them are measurable. `ui-fix` c
 
 | Craft check | What it enforces |
 |---|---|
-| **Spacing** | One scale (multiples of 4). Same thing, same size — siblings share padding, height and gap. Space shows grouping: inside a group < between groups < between sections |
+| **Spacing** | One scale (multiples of 4). Same thing, same size — siblings share padding, height and gap, and a row of search + dropdown + button shares one height, radius, border and fill. Space shows grouping: inside a group < between groups < between sections |
 | **Alignment** | Text, labels, lists and tables are left-aligned; numbers right-aligned; one left edge per column. Apps fill the window — no 640px centred column in a 1440px app. Centre only a short title or an object in free space |
 | **Words** | Plain and short: "Save changes", not "Submit". No hype words, no `!`, no greeting headlines, comparisons say what they compare to ("+12% vs last month"), seed data looks real |
 | **Hierarchy** | One primary action, one headline value, size and colour before weight, three text roles |
