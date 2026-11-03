@@ -89,11 +89,12 @@ It asks **one question first** when the request is vague: what feels wrong, and 
 | **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
 | **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
 | **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, other scripts (Devanagari, Arabic, CJK, Thai, Cyrillic), right-to-left, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
+| **3b. Think** | **Looks first, before any scan:** writes what bothers it in plain words, asks ten universal questions of every region (purpose · what's clickable · do look-alike things match · grouping · priority · words · edge cases · access · identity · result/undo) and compares every row, column, grid and list of look-alike things. Finds what no scan was written for. Works on screenshots and non-web apps too |
 | **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then thirteen scanners: **consistency scan** (do look-alike things match?), **affordance scan** (what looks clickable?), **slop scan** (off-grid spacing, sibling mismatches, centred text, AI tells), **visual style inventory**, **layout & spacing**, **text density**, **clipped content**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
 | **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
 | **6. Report** | Blunt and short. Always ends with **design suggestions**: 2–3 visual directions built from **your product's own identity** (brand, personality, users, domain) — genuinely different from each other and from the generic SaaS look — rendered on your real page, with the exact tokens that change and which one it recommends. A **layout blueprint** that says where every component goes, how wide, with what spacing — and why. Hierarchy, rename, dependency, effort, stress and consistency tables |
 | **7. Fix** | In a fixed order — **spacing → alignment → words → colour → type → icons → details → motion → one rich moment** — so each pass makes the next one easier. Controls come from your own components first, then **befui** (asks before adding), then your kit. Every 🔴 and 🟠 fixed or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve. A screen with no slop is left alone |
-| **8. Prove** | Re-scans, re-walks, re-scores. **Visual regression** on every screen using a changed shared component. Checks the save payload and tests still pass. Builds a demo with Before / Fixed / Upgraded / each design direction as tabs — pick a look by seeing it — with a proof panel. Adds a regression test or lint rule. Updates design.md and memory |
+| **8. Prove** | Re-scans, re-walks, re-scores. **Gap check:** anything the scans missed becomes a saved check (`.ui-fix/checks/`) for next time. **Visual regression** on every screen using a changed shared component. Checks the save payload and tests still pass. Builds a demo with Before / Fixed / Upgraded / each design direction as tabs — pick a look by seeing it — with a proof panel. Adds a regression test or lint rule. Updates design.md and memory |
 
 ### What it catches
 
@@ -127,9 +128,17 @@ Walkthrough: Newcomer 12 steps · 5 friction · completed ✓ | Keyboard ✗ stu
           couldn't tell where Shipping ends and Payment starts. [Proximity] CheckoutForm.tsx:212
 🔴 [18] 2. Tab jumps from Country to Pay, skipping Postal code. [A11y] CheckoutForm.tsx:88
 🟠 [18] 3. "Card number" sits in the other column and greys out silently. [Proximity][Visibility]
-🟡 [4]  4. #1a73e8 ×6 — design.md says --brand-primary.
+🟠 [12] 4. Filter row: search 64px, dropdown 78px, "Clear filters" 78px — radius 12/16/16, fill differs.
+          [Consistency] FilterBar.tsx:41   (slop-scan: controlRowMismatch)
+🟠 [12] 5. "Delete old logs" card opens on click but shows no chevron — nobody can tell it's clickable.
+          [Affordance] SettingsCard.tsx:19   (affordance-scan: expanderNoIndicator)
+🟡 [4]  6. #1a73e8 ×6 — design.md says --brand-primary.
 
 Root cause: 1 comes from components/form/Section.tsx — also affected: SignupForm, AddressForm.
+Fix 4: use one control height/radius from the Button/Input/Select tokens (befui `--control-h`).
+Fix 5: wrap in befui `collapsible` (chevron + animated height + keyboard).
+
+Gap check: the 64px-vs-78px search was found by eye first, then by probe → saved as .ui-fix/checks/filter-row.js
 ```
 
 ### Score (rubric v3)
@@ -286,6 +295,7 @@ your-project/
 - **Have a `design.md`.** No design.md? Let the first run generate one, then fix the `(inferred)` lines.
 - **Keep your dev server runnable** with seed/test data. Real screenshots, walkthroughs and visual regression need it. Without a browser it still works from code — just with less proof.
 - **Give it a browser** — Claude in Chrome, a built-in browser pane, or Playwright.
+- **Run it again on the same project.** Each run saves the checks it had to invent (`.ui-fix/checks/`) and your decisions (`.ui-fix/memory.md`), so the next run starts smarter and never re-argues settled points.
 - **Say yes or no to upgrades.** It remembers both, so it never argues the same point twice.
 - **Local / dev / staging only.** It clicks choices and fills fields while testing. Never point it at production.
 
@@ -340,6 +350,15 @@ node ~/.claude/skills/ui-fix/scripts/token-scan.mjs src/pages
 ```
 
 ---
+
+## Recent changes
+
+| Version | What changed |
+|---|---|
+| **2.10** | Universal pass: looks and thinks before scanning (open critique, ten questions, sweeps), `consistency-scan.js`, learned checks in `.ui-fix/checks/`, screenshot-only and non-web apps |
+| **2.9** | `affordance-scan.js` + affordance guide — can a user tell what's clickable? (expanders with no chevron, text that looks like text) |
+| **2.8** | Anti-slop pass + `slop-scan.js` (spacing, centring, controls on one row, AI tells), befui as the default component source, 12 domain-specific style previews |
+| **2.7** | Design library previews in the README, befui as an optional component source |
 
 The "audit the common signs of generated UI, fix in layered passes, leave good screens alone" idea is in the spirit of [unslop](https://heydamir.design/unslop) by Damir Sokolovsky (CC BY 4.0). The checks, scan and rules here are written for ui-fix.
 
