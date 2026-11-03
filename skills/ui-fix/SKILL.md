@@ -16,6 +16,7 @@ The user points at something: a page, a form, a table, a dashboard, a modal, one
 - **Evidence over opinion.** Every finding has proof: a measured number, a screenshot, a walkthrough step.
 - **Effort is the enemy.** Remove work: derive, default, defer, delete.
 - **Every product looks like itself.** There is no default look. Start from the product's identity — brand, personality, domain, users, context — and never converge on the generic SaaS template (light grey page, white cards, tiny uppercase labels, one blue button, pills, pastel gradient). Directions must differ from each other and from other projects.
+- **Think first, scan second.** The scans only measure what was thought of in advance. Look at the screen, write what bothers you in plain words, ask the ten questions of every region and compare every set of look-alike things (`references/think-like-a-designer.md`) — then measure. Whatever the scans miss, write a probe and keep it as a learned check. This is what makes the skill work on any screen, stack or platform.
 - **Crafted, not generated.** Every size, space and word is a decision: one spacing scale, siblings identical, text left-aligned (not everything centred), plain words, quiet chrome, one rich moment and one signature that only this product has. Measure it with `scripts/slop-scan.js` (`references/anti-slop.md`). Don't swap one trend for another.
 - **Use real components, restyled.** For React + Tailwind projects, befui (the user's own library: 273 components, 38 page blocks) is the default source for controls, with the project's own components first. Restyle through tokens so the product keeps its own look (`references/library/befui.md`).
 - **Have a design opinion.** Judge how it looks and always come back with concrete visual suggestions. "Follow the design system" means don't change the look *silently* — never "have no opinion".
@@ -43,6 +44,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/understand-the-screen.md` | Every run — Phase 1 |
 | `references/visual-design.md` | Every run — visual critique, within-system polish, design directions |
 | `references/anti-slop.md` | **Every run** — the craft checks (spacing, alignment & centring, plain words, hierarchy, navigation), the measurable "AI-generated" tells and their fixes, uniqueness (one moment + one signature), how much to change, order of passes |
+| `references/think-like-a-designer.md` | **Every run, first** — the universal pass: open critique before any scan, the ten questions, region/pair/state/neighbour sweeps, write-a-probe for anything no scan covers, gap check → learned checks, how to work on screenshots and non-web apps |
 | `references/affordance.md` | **Every run** — can a user tell what is clickable? Signals per control type, expand/collapse (chevron, whole-row button), rows that open things, predictable results, how to fix |
 | `references/layout-and-spacing.md` | Every run — grid, alignment, balance, widths, spacing, placement, layout blueprint |
 | `references/hierarchy-and-naming.md` | Every run — headings vs labels, confusing names, placeholders |
@@ -60,6 +62,7 @@ Read the reference before the phase that uses it. Load only what the target need
 | `references/library/domains.md` | What good looks like per domain — HR, ERP, POS, salon/booking, CRM, finance, healthcare, e-commerce, education, logistics, monitoring, real estate, internal tools, marketing sites |
 | `references/library/type-and-colour.md` | Font pairings by personality, type scales, building a palette from a brand colour (OKLCH), colour strategies, dark mode, chart colours |
 | `scripts/slop-scan.js` | Browser — spacing off the grid, sibling padding/height mismatch, centred text and narrow centred columns, gradients, glows, emoji, UPPERCASE labels, heavy weights, hype words, `!`, infinite animations, `transition: all` |
+| `scripts/consistency-scan.js` | Browser — things that look alike but don't match: icons in a row/column with different sizes, same-level headings with different sizes, cards/panels side by side with different height/radius/padding, table headers and labels styled differently |
 | `scripts/affordance-scan.js` | Browser — controls that give no sign they are clickable: expanders with no chevron, clickable text/cards with no cue, links that look like text, ghost buttons that look like labels |
 | `scripts/style-inventory.js` | Browser — fonts, sizes, colours, radii, shadows, button styles in use; contrast |
 | `scripts/layout-scan.js` | Browser — container width, grid, alignment, row balance, dead zones, widths, spacing, layout map |
@@ -94,8 +97,8 @@ Browser scripts: run the file's contents with the browser's JS tool (or Playwrig
 1. **Ask first, once** if the request is vague (Phase 0) → read `.ui-fix/memory.md`, design.md, the product identity; note whether the project already uses befui.
 2. **Understand** the screen: purpose, users, data in/out → Screen brief (Phase 1).
 3. **See** it: screenshots before (desktop + 375px, every role) — use a harness if there is login/API (Phase 2).
-4. **Walk** it as a newcomer and a keyboard user (Phase 3).
-5. **Measure:** `slop-scan.js`, `layout-scan.js`, `style-inventory.js`, `text-density.js`, `clip-scan.js`, `hierarchy-scan.js`, `axe-run.js`, `focus-scan.js` (+ `dependency-scan.js` for forms) — keep the numbers (Phase 4).
+4. **Walk** it as a newcomer and a keyboard user (Phase 3). **Look and think first** (Phase 3b): write what bothers you in plain words, ask the ten questions per region, compare every set of look-alike things.
+5. **Measure:** the scans below plus any `.ui-fix/checks/*.js`, **plus a probe for every finding no scan covers** — `slop-scan.js`, `layout-scan.js`, `style-inventory.js`, `text-density.js`, `clip-scan.js`, `hierarchy-scan.js`, `axe-run.js`, `focus-scan.js`, `consistency-scan.js`, `affordance-scan.js` (+ `dependency-scan.js` for forms) — keep the numbers (Phase 4).
 6. **Judge** by impact; slop counts fold into L (layout, spacing, placement) and V (visual design) — rubric v3 stays unchanged (Phase 5).
 7. **Report** in the fixed order — what you'll see, how to see it, what was wrong, options, not tested, score, details, files (Phase 6).
 8. **Fix** after a restore point, in this order: **spacing → alignment/centring → words → colour → type → icons → details → motion → the one rich moment** (Phase 7; levels decide how far). Controls come from the project's own components, then befui, then the project's kit.
@@ -142,10 +145,18 @@ No browser → say so in one line; work from code and any screenshot given.
 
 From `references/walkthrough-and-stress.md`: persona walkthroughs (always Newcomer + Keyboard-only; others as the brief suggests), 5-second and first-click tests, friction log; stress tests (breakpoints, 200% zoom, `stress-text.js`, data volume, missing data, slow network, errors, dark mode); consistency with sibling screens.
 
+## Phase 3b — Look and think first (the universal pass)
+
+Before running any scan, do `references/think-like-a-designer.md` §1–3: write the **open critique** (5–10 plain-language lines, in the order the eye lands), ask the **ten questions** of every region, and run the **pair sweep** — for every set of look-alike things (a row, a column, a grid, a list), compare size, shape, colour, type, spacing, alignment. This finds what no scan was written for. Keep the list: Phase 4 measures it, and the **gap check** (Phase 8) compares it with what the scans caught.
+
+No browser, only a screenshot, or a native/Flutter app? Same pass, measured from the picture or the source (`think-like-a-designer.md` §7) — and say what you couldn't measure under "Not tested".
+
 ## Phase 4 — Measure
 
 Keep the raw numbers for before → after:
 - **Visual critique** (`layout-and-spacing.md` §1 + `visual-design.md` §1): 5–8 lines on grid, alignment, balance, rhythm, focal point, reading path, density, fit, type, colour, surfaces — and **identity**: could you tell which product this is with the logo covered?
+- `consistency-scan.js` — always (look-alike things that don't match). Then run every `.ui-fix/checks/*.js` (learned checks from earlier runs).
+- **A probe for every finding from Phase 3b that no scan covers** (`think-like-a-designer.md` §4) — numbers, not impressions.
 - `slop-scan.js` — always (spacing off the grid, sibling mismatches, **controls on one row with different height/radius/border/fill/text size**, centred text, gradients/glows/emoji, UPPERCASE labels, hype words, infinite animations…). Read `references/anti-slop.md` first.
 - `affordance-scan.js` — always. Then hover and tab to every item it reports and screenshot (hover feedback isn't measurable in the script). Read `references/affordance.md`.
 - `style-inventory.js` — always.
@@ -259,7 +270,8 @@ From `references/prove-and-remember.md`:
 2. **Demo** — one self-contained HTML file: Before / After (and Upgraded / Directions) as tabs, real screenshots with desktop/mobile toggle, live interactive After with real tokens, numbered callouts, a proof panel. Published as an artifact or inline preview if the environment allows.
 3. **Lock in:** a focused test if the project has a test setup; propose a lint rule if it has a linter.
 4. **design.md:** generate if missing (with approval); propose rules for gaps; append on approval with a Changelog line.
-5. **Memory:** decisions, rejections, superseded decisions, glossary, **look signature** of any applied direction, harness location, screen log row (score + **rubric version**, open items).
+5. **Gap check & learn** (`think-like-a-designer.md` §6): compare the open critique with what the scans reported. Every finding the scans missed → save its probe as `.ui-fix/checks/<name>.js`, add it to memory under Learned checks, and tell the user in one sentence if it looks worth adding to ui-fix itself.
+6. **Memory:** decisions, rejections, superseded decisions, glossary, **look signature** of any applied direction, harness location, screen log row (score + **rubric version**, open items).
 
 ## Phase 9 — Wrap up
 

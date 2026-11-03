@@ -89,7 +89,7 @@ It asks **one question first** when the request is vague: what feels wrong, and 
 | **1. Understand** | Works out what the screen is for, who uses it and how often, what it loads and saves (reads the API and backend), the business rules, the flow, every element's purpose, and the shortest task path. Catches UI ↔ backend mismatches. Shows a short *Screen brief* |
 | **2. See** | Runs your dev server, screenshots desktop + mobile and key states |
 | **3. Walk** | Tries the task as real users — **Newcomer** and **Keyboard-only** always, plus Power user / Touch / 200% zoom / Regional language / Interrupted when they apply. 5-second test, first-click test, friction log. Then **stress tests**: breakpoints, zoom, pseudo-localization, other scripts (Devanagari, Arabic, CJK, Thai, Cyrillic), right-to-left, long values, 0/1/1000 rows, slow network, errors, dark mode. Compares with sibling screens for consistency |
-| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then twelve scanners: **affordance scan** (what looks clickable?), **slop scan** (off-grid spacing, sibling mismatches, centred text, AI tells), **visual style inventory**, **layout & spacing**, **text density**, **clipped content**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
+| **4. Measure** | A designer's visual critique (grid, alignment, balance, rhythm, reading path), then thirteen scanners: **consistency scan** (do look-alike things match?), **affordance scan** (what looks clickable?), **slop scan** (off-grid spacing, sibling mismatches, centred text, AI tells), **visual style inventory**, **layout & spacing**, **text density**, **clipped content**, accessibility (axe), hierarchy & naming, dependent fields, keyboard & focus, text stress, design-token drift. Effort table for forms |
 | **5. Judge** | Every issue gets severity, an **Impact score** (severity × frequency × reach), a principle tag, evidence, and file:line. Finds the shared root cause and every screen it affects. Scores 0–100 |
 | **6. Report** | Blunt and short. Always ends with **design suggestions**: 2–3 visual directions built from **your product's own identity** (brand, personality, users, domain) — genuinely different from each other and from the generic SaaS look — rendered on your real page, with the exact tokens that change and which one it recommends. A **layout blueprint** that says where every component goes, how wide, with what spacing — and why. Hierarchy, rename, dependency, effort, stress and consistency tables |
 | **7. Fix** | In a fixed order — **spacing → alignment → words → colour → type → icons → details → motion → one rich moment** — so each pass makes the next one easier. Controls come from your own components first, then **befui** (asks before adding), then your kit. Every 🔴 and 🟠 fixed or the blocker named. Bigger upgrades shown as an "Upgraded" view for you to approve. A screen with no slop is left alone |
@@ -167,6 +167,14 @@ Safe to try: before editing several files it saves a **restore point** (`.ui-fix
 Pages behind login or an API: it builds a reusable **test harness** (Playwright + mocked routes using your own fixtures, matching your real API shapes) in `.ui-fix/harness/`.
 
 Says *"I don't see changes"*? It checks, in order: files changed → server serving them → right URL/role → hard refresh → only local → or just subtle (and offers a bigger option).
+
+## It thinks first, then measures
+
+Scans only catch what someone thought of in advance. So before any scan, `ui-fix` **looks at the screen and writes down what bothers it in plain words**, then asks **ten universal questions** of every region (what is this for · can I tell what to click · do look-alike things match · is related stuff close · what's most prominent · are the words plain · what happens at the edges · can everyone use it · does it feel like this product · do I know what will happen and can I undo it) and **compares every set of look-alike things** — a row, a column, a grid, a list — on size, shape, colour, type and spacing. That's how it finds a 64px search next to 78px dropdowns, or a card that secretly opens, without a rule written for each.
+
+- **Measures what it finds:** the built-in scans, or a short read-only probe it writes on the spot.
+- **Learns what it missed:** every finding the scans didn't catch is saved as `.ui-fix/checks/<name>.js` and runs on every later run of that project, and logged in `.ui-fix/memory.md`.
+- **Works beyond web pages:** screenshots only, Flutter, React Native or native apps get the same pass, measured from the picture or the source — and it says what it couldn't measure.
 
 ## Looks designed, not generated
 
@@ -267,7 +275,8 @@ The right variant for the content — e.g. the control depends on how many optio
 your-project/
 ├── design.md                  # your design system (generated if missing, with your OK)
 └── .ui-fix/
-    ├── memory.md              # decisions, rejected ideas, glossary, score history — commit this
+    ├── memory.md              # decisions, rejected ideas, glossary, learned checks, score history — commit this
+    ├── checks/                # learned checks: probes for things the built-in scans missed — commit this
     ├── harness/               # reusable test harness for pages behind login/API — commit this
     └── runs/<date>-<screen>/  # screenshots, backups, restore.sh, demo.html — add to .gitignore
 ```
@@ -288,6 +297,7 @@ your-project/
 skills/ui-fix/
 ├── SKILL.md                              # the pipeline
 ├── references/
+│   ├── think-like-a-designer.md          # the universal pass: open critique, ten questions, sweeps, probes, learned checks, any platform
 │   ├── anti-slop.md                      # craft checks, AI tells → fixes, uniqueness, how much to change, order of passes
 │   ├── affordance.md                     # can a user tell what's clickable? signals, expand/collapse, predictable results
 │   ├── harness-and-safety.md             # test harness, restore points, "I don't see changes", rule conflicts
@@ -309,6 +319,7 @@ skills/ui-fix/
 │       ├── domains.md                    # what good looks like per domain
 │       └── type-and-colour.md            # font pairings, palettes, dark mode, chart colours
 └── scripts/
+    ├── consistency-scan.js               # look-alike things that don't match: icons, headings, cards in a row, labels (browser)
     ├── affordance-scan.js                # controls that give no sign they're clickable (browser)
     ├── slop-scan.js                      # off-grid spacing, sibling mismatches, centring, gradients/glows/emoji, hype copy, motion (browser)
     ├── text-density.js                   # words per section/screen, tiny text, repeated numbers (browser)

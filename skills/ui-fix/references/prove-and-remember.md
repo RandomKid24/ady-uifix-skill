@@ -59,6 +59,9 @@ File: **`.ui-fix/memory.md`** in the project root (commit it). Read it **first**
 ## Users & context
 - <stable facts from Screen briefs: who uses the app, devices, language, domain terms>
 
+## Learned checks (run these in Phase 4)
+- YYYY-MM-DD: `.ui-fix/checks/filter-row-heights.js` — search, select and button on one row differ in height. (found by open critique; no scan covered it)
+
 ## Decisions (follow these)
 - YYYY-MM-DD: Labels spell out codes, code in brackets — "Purchase order no. (PO)". (approved)
 - YYYY-MM-DD: look: personality calm·precise·trustworthy · type humanist sans + tabular numbers · colour warm neutrals + deep green accent · surfaces flat with dividers · shape soft 4px · density compact · layout sidebar + list-first (approved)
@@ -89,6 +92,7 @@ Rules:
 - Record **decisions the user approved or rejected**, glossary terms, and the screen log — not the full reports.
 - Before proposing an upgrade, check Rejected. Before renaming, check Glossary.
 - Keep it short: roll old screen-log rows into one line per screen.
+- Learned checks live in **`.ui-fix/checks/*.js`** (commit them): read-only browser probes, one-line header each. Run them in Phase 4.
 - Run artifacts (screenshots, demos, scan outputs) go in **`.ui-fix/runs/<YYYY-MM-DD>-<target-slug>/`**. Suggest adding `.ui-fix/runs/` to `.gitignore` (keep `memory.md` committed).
 
 ---
@@ -132,6 +136,7 @@ Done when: <checks — axe 0 serious, primary path N clicks, dependent fields ne
 - [ ] Visual regression on everything a shared change touches
 - [ ] Something visible changed if the user asked to make it better — or it's stated plainly that it's subtle, with a bigger option
 - [ ] Product identity written (personality, context, brand anchors, keep)
+- [ ] Open critique written before the scans; ten questions asked per region; pair sweep done; every finding measured (scan or probe); gaps saved as learned checks (`think-like-a-designer.md`)
 - [ ] Affordance: every clickable thing has a visible signal (box / icon / underline / verb) + hover and focus; expanders have a chevron (`affordance.md`)
 - [ ] Anti-slop: every tell in `slop-scan.js` is 0 or has a stated reason; spacing on the grid, siblings equal, text left-aligned, plain words (`anti-slop.md`)
 - [ ] Components: project's own → befui (if React + Tailwind; asked before adding) → project's kit; befui restyled via tokens, not left at defaults (`library/befui.md`)
